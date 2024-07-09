@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
-from app.models import User, UserInfo
+from app.models import User, DailyCheckIn
 from app.forms.forms import RegistrationForm, LoginForm
 from app.apis.nutrition_api import nutrition_calculator
 
@@ -53,7 +53,7 @@ def logout():
 def index():
     return render_template("index.html")
 
-
+'''
 @bp.route("/nutrition", methods=['GET', 'POST'])
 def nutrition():
     nutrition_data = None
@@ -62,6 +62,42 @@ def nutrition():
         if query:
             nutrition_data = nutrition_calculator(query)
     return render_template('nutrition.html', nutrition_data=nutrition_data)
+    
+    Initially used for testing
+'''
+
+
+@bp.route('/daily-checkin', methods=['GET', 'POST'])
+@login_required
+def daily_checkin():
+    if request.method == 'POST':
+        did_workout = request.form.get('did_workout') == 'on'
+        food_log = request.form.get('food_log')
+        
+        nutrition_data = nutrition_calculator(food_log)
+
+        checkin = DailyCheckIn(
+            user_id=current_user.id,
+            did_workout=did_workout,
+            total_calories=nutrition_data.get('total_calories'),
+            total_protein=nutrition_data.get('total_protein'),
+            total_sugars=nutrition_data.get('total_sugars'),
+            total_sodium=nutrition_data.get('total_sodium')
+        )
+        
+        db.session.add(checkin)
+        db.session.commit()
+        
+        return redirect(url_for('auth.checkin_history'))
+    
+    return render_template('daily_checkin.html')
+
+
+@bp.route('/checkin-history')
+@login_required
+def checkin_history():
+    checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).all()
+    return render_template('checkin_history.html', checkins=checkins)
 
 
 @login_manager.user_loader

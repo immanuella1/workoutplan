@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -31,3 +31,21 @@ class UserInfo(db.Model):
 
     def __repr__(self):
         return f'<UserInfo {self.user_id}>'
+    
+class DailyCheckIn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, default=date.today, nullable=False)
+    did_workout = db.Column(db.Boolean, default=False, nullable=False)
+    total_calories = db.Column(db.Float, nullable=True)
+    total_protein = db.Column(db.Float, nullable=True)
+    total_sugars = db.Column(db.Float, nullable=True)
+    total_sodium = db.Column(db.Float, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('daily_checkins', lazy=True))
+
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'date', name='unique_user_date_checkin'),
+    )
+
+    def __repr__(self):
+        return f'<DailyCheckIn {self.date} for User {self.user_id}>'
