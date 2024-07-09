@@ -4,6 +4,7 @@ from app import db, login_manager
 from app.models import User, DailyCheckIn
 from app.forms.forms import RegistrationForm, LoginForm
 from app.apis.nutrition_api import nutrition_calculator
+from datetime import date
 
 bp = Blueprint("auth", __name__)
 
@@ -70,27 +71,37 @@ def nutrition():
 @bp.route('/daily-checkin', methods=['GET', 'POST'])
 @login_required
 def daily_checkin():
-    if request.method == 'POST':
-        did_workout = request.form.get('did_workout') == 'on'
-        food_log = request.form.get('food_log')
-        
-        nutrition_data = nutrition_calculator(food_log)
+    today = date.today()
+    existing_checkin = DailyCheckIn.query.filter_by(user_id=current_user.id, date=today).first()
 
-        checkin = DailyCheckIn(
-            user_id=current_user.id,
-            did_workout=did_workout,
-            total_calories=nutrition_data.get('total_calories'),
-            total_protein=nutrition_data.get('total_protein'),
-            total_sugars=nutrition_data.get('total_sugars'),
-            total_sodium=nutrition_data.get('total_sodium')
-        )
-        
-        db.session.add(checkin)
-        db.session.commit()
-        
-        return redirect(url_for('auth.checkin_history'))
+    if request.method == 'POST':
+        if existing_checkin:
+            flash('You have already checked in today.')
+        else:
+            did_workout = request.form.get('did_workout') == 'on'
+            food_log = request.form.get('food_log')
+            
+            nutrition_data = nutrition_calculator(food_log)
+
+            try:
+                checkin = DailyCheckIn(
+                    user_id=current_user.id,
+                    did_workout=did_workout,
+                    total_calories=nutrition_data.get('total_calories'),
+                    total_protein=nutrition_data.get('total_protein'),
+                    total_sugars=nutrition_data.get('total_sugars'),
+                    total_sodium=nutrition_data.get('total_sodium')
+                )
+                
+                db.session.add(checkin)
+                db.session.commit()
+                flash('Check-in successful!')
+                return redirect(url_for('auth.checkin_history'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'An error occurred: {e}')
     
-    return render_template('daily_checkin.html')
+    return render_template('daily_checkin.html', existing_checkin=existing_checkin)
 
 
 @bp.route('/checkin-history')
