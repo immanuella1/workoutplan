@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Nutrition Data</title>
+</head>
+<body>
+  <h1>Nutrition Data</h1>
+  <form method="post">
+    <input type="text" name="query" placeholder="Enter food item" required>
+    <button type="submit">Fetch Nutrition Data</button>
+  </form>
+
+  {% if nutrition_data %}
+  <h2>Total Nutrition Information</h2>
+  <p>Total Calories: {{ nutrition_data.total_calories }}</p>
+  <p>Total Protein: {{ nutrition_data.total_protein }}</p>
+  <p>Total Sugars: {{ nutrition_data.total_sugars }}</p>
+  <p>Total Sodium: {{ nutrition_data.total_sodium }}</p>
+  {% endif %}
+</body>
+</html>
