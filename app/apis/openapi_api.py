@@ -7,6 +7,8 @@ from openai import OpenAI
 # Load environment variables from a .env file
 load_dotenv()
 
+my_api_key = os.getenv("OPENAI_KEY")
+
 openai.api_key = my_api_key
 
 client = OpenAI(
@@ -26,7 +28,7 @@ def workoutRecomendation(info):
     )   
     return completion.choices[0].message.content
 
-def nutritionRecomendation(info){
+def nutritionRecomendation(info):
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -36,6 +38,7 @@ def nutritionRecomendation(info){
         ]
     )
     return completion.choices[0].message.content
-}
-#if __name__ == "__main__":
-#    recomendation()
+
+
+if __name__ == "__main__":
+    print(workoutRecomendation("height:5'4'', weight: 170lbs, goal: loose 10lb and get stronger"))
