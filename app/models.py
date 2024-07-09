@@ -2,6 +2,9 @@ from datetime import datetime
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,3 +34,14 @@ class UserInfo(db.Model):
 
     def __repr__(self):
         return f'<UserInfo {self.user_id}>'
+    
+# Progress Model
+class Progress(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timeframe = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    weight = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('progress', lazy=True))
+    
+db.create_all()
