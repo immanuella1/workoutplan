@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -77,3 +77,14 @@ class DailyCheckIn(db.Model):
 
     def __repr__(self):
         return f"<DailyCheckIn {self.date} for User {self.user_id}>"
+
+
+class WeightEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, default=datetime.today, nullable=False)
+    user = db.relationship("User", backref=db.backref("weight_entries", lazy=True))
+
+    def __repr__(self):
+        return f"<WeightEntry {self.user_id} - {self.date}>"

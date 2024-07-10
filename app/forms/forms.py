@@ -36,3 +36,8 @@ class UserInfoForm(FlaskForm):
     goal = StringField('Goal', validators=[DataRequired()])  
     time_frame = IntegerField('Time Frame (in weeks)', validators=[DataRequired()])
     submit = SubmitField('Submit')
+    
+
+class WeightEntryForm(FlaskForm):
+    weight = FloatField('Weight (in pounds)', validators=[DataRequired()])
+    submit = SubmitField('Submit')

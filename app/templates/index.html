@@ -9,6 +9,12 @@
     {% if current_user.is_authenticated %}
       <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
+      {% if next_update %}
+        <p>Next weight update is due on {{ next_update }}.</p>
+      {% else %}
+        <p><a href="{{ url_for('auth.weight_update') }}">Update Weight</a></p>
+      {% endif %}
+      <p><a href="{{ url_for('auth.weight_history') }}">Weight History</a></p>
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>

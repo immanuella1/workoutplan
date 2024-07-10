@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Update Weight</title>
+</head>
+<body>
+  <h1>Update Weight</h1>
+  {% if next_update %}
+    <p>Next weight update is due on {{ next_update }}.</p>
+  {% else %}
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.weight.label }}<br>
+        {{ form.weight(size=32) }}
+      </p>
+      <p>{{ form.submit() }}</p>
+    </form>
+  {% endif %}
+</body>
+</html>
