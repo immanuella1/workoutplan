@@ -22,6 +22,9 @@ body{
    font-size: 4em;
    text-transform: uppercase;
 }
+.smaller_heading_style{
+   font-size: 2rem;
+}
 
 .about{
    padding: 1em;

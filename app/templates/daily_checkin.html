@@ -5,8 +5,11 @@
   <title>Daily Check-In</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Daily Check-In</h1>
+  </div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>
@@ -29,6 +32,7 @@
       <button type="submit">Submit</button>
     </form>
   {% endif %}
+  </div>
   <script>
     document.getElementById('checkin-form').addEventListener('submit', function(event) {
       event.preventDefault(); 
