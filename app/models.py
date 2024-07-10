@@ -88,3 +88,20 @@ class WeightEntry(db.Model):
 
     def __repr__(self):
         return f"<WeightEntry {self.user_id} - {self.date}>"
+
+class Workouts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    monday = db.Column(db.String(500), nullable=False)
+    tuesday = db.Column(db.String(500), nullable=False)
+    wednesday = db.Column(db.String(500), nullable=False)
+    thursday = db.Column(db.String(500), nullable=False)
+    friday = db.Column(db.String(500), nullable=False)
+    saturday = db.Column(db.String(500), nullable=False)
+    sunday = db.Column(db.String(500), nullable=False)
+    nutrition_goals = db.Column(db.String(500), nullable=False)
+    
+    user = db.relationship("User", backref=db.backref("workouts", lazy=True))
+    
+    def __repr__(self):
+        return f"<Workouts {self.user_id}>"
