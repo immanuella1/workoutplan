@@ -144,13 +144,17 @@ def mandatory_update():
         db.session.add(user_info)
         db.session.commit()
         
-        recommendation = workoutRecomendation(form.goal.data)
+        workout_plan = workoutRecomendation(form.goal.data)
         
-        flash("Your information has been saved and your workout plan has been generated.")
-        return redirect(url_for("auth.index"))
+        return render_template("register.html", form=form, workout_plan=workout_plan)
+    
+    #return redirect(url_for("auth.index"))
 
     return render_template("mandatory_update.html", form=form)
-
+'''@bp.route("/")
+@login_required
+def index():
+    return render_template("index.html")'''
 
 @login_manager.user_loader
 def load_user(user_id):

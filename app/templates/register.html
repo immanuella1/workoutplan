@@ -48,6 +48,13 @@
       <p>{{ form.submit() }}</p>
 
     </form>
+    <!-- Display workout plan -->
+{% if workout_plan %}
+<div>
+  <h2>Workout Plan</h2>
+  <p>{{ workout_plan }}</p>
+</div>
+{% endif %}
     
   </body>
 
