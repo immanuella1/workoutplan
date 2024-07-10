@@ -1,14 +1,16 @@
 body{
    font-size: 10px;
 }
+
 .main_page{
    background-color: beige;
 }
+
 .logreg_size{
    font-size: 3em;
    word-spacing: 4em;
-   
 }
+
 .center_main{
    text-align: center;
    padding-top: 6%;
@@ -39,4 +41,25 @@ body{
    float: right;
    text-align: right;
    margin-right: 10em;
+}
+.custom-input{
+   width: 25em; /* Adjust width as needed */
+   height: 2em; /* Adjust height as needed */
+   /* Additional styling if required */
+}
+
+.fields_lables{
+   font-size: 2.5em;
+}
+
+.remind{ /* remember me */
+   font-size: 2em;
+}
+
+.submit{
+   font-size: 1em; 
+}
+
+.custom-checkbox { /* checkbox size */
+   transform: scale(1.3);
 }
