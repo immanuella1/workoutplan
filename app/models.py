@@ -2,6 +2,13 @@ from datetime import datetime, date
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy import text
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,15 +17,37 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     phone_no = db.Column(db.String(15), nullable=True)
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
+    points = db.Column(db.Integer, default=0, nullable= True)
+
+#Put nullable as true insead of false
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def add_points(self, points):
+        self.points += points
+        
+    @property
+    def level(self):
+        if self.points >= 2000:
+            return 'Expert'
+        elif self.points >= 1800:
+            return 'Pro'
+        elif self.points >= 1200:
+            return 'Intermediate'
+        elif self.points >= 200:
+            return 'Novice'
+        else:
+            return 'Beginner'
+        
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.username}>'    
+    
+    
 
 class UserInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,3 +78,5 @@ class DailyCheckIn(db.Model):
 
     def __repr__(self):
         return f'<DailyCheckIn {self.date} for User {self.user_id}>'
+
+
