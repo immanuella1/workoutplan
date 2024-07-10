@@ -19,12 +19,19 @@
     </p>
     <p>
       {{ form.goal.label }}<br>
-      {{ form.goal(size=32) }}  
+      {{ form.goal(size=32) }}<br>
+      {% for error in form.goal.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
     </p>
     <p>
       {{ form.time_frame.label }}<br>
-      {{ form.time_frame(size=32) }}
+      {{ form.time_frame(size=10) }}<br>
+      {% for error in form.time_frame.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
     </p>
+    
     <p>{{ form.submit() }}</p>
   </form>
 </body>

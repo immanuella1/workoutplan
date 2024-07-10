@@ -4,10 +4,12 @@ from app import db, login_manager
 from app.models import User, DailyCheckIn, UserInfo
 from app.forms.forms import RegistrationForm, LoginForm, UserInfoForm
 from app.apis.nutrition_api import nutrition_calculator
+from app.apis.openapi_api import *
 from datetime import date
+import openai
+import os
 
 bp = Blueprint("auth", __name__)
-
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -141,7 +143,10 @@ def mandatory_update():
         )
         db.session.add(user_info)
         db.session.commit()
-        flash("Your information has been saved.")
+        
+        recommendation = workoutRecomendation(form.goal.data)
+        
+        flash("Your information has been saved and your workout plan has been generated.")
         return redirect(url_for("auth.index"))
 
     return render_template("mandatory_update.html", form=form)

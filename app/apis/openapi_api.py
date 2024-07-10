@@ -23,6 +23,9 @@ def workoutRecomendation(info):
     )   
     return completion.choices[0].message.content
 
+info = "User's height, weight, goal and time frame"
+
+
 def nutritionRecomendation(info):
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
