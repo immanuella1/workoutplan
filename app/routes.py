@@ -1,13 +1,17 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
-from app.models import User, DailyCheckIn, UserInfo
-from app.forms.forms import RegistrationForm, LoginForm, UserInfoForm
+from app.models import User, DailyCheckIn, UserInfo, WeightEntry
+from app.forms.forms import RegistrationForm, LoginForm, UserInfoForm, WeightEntryForm
 from app.apis.nutrition_api import nutrition_calculator
+<<<<<<< HEAD
 from app.apis.openapi_api import *
 from datetime import date
 import openai
 import os
+=======
+from datetime import date, datetime, timedelta
+>>>>>>> main
 
 bp = Blueprint("auth", __name__)
 
@@ -63,7 +67,19 @@ def logout():
 
 @bp.route("/")
 def index():
-    return render_template("index.html")
+    if current_user.is_authenticated:
+        last_entry = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).first()
+        next_update = None
+        if last_entry:
+            next_update = last_entry.date + timedelta(weeks=2)
+            today = datetime.utcnow().date()
+            if today < next_update:
+                next_update = next_update.strftime('%Y-%m-%d')
+        
+        return render_template("index.html", next_update=next_update)
+    else:
+        return render_template("index.html")
+
 
 
 """
@@ -126,7 +142,6 @@ def checkin_history():
 
 
 @bp.route("/mandatory-update", methods=["GET", "POST"])
-@bp.route("/mandatory-update")
 @login_required
 def mandatory_update():
     if UserInfo.query.filter_by(user_id=current_user.id).first():
@@ -138,10 +153,17 @@ def mandatory_update():
             user_id=current_user.id,
             height=form.height.data,
             current_weight=form.current_weight.data,
-            goal=form.goal.data,  # Updated field
+            goal=form.goal.data,
             time_frame=form.time_frame.data,
         )
         db.session.add(user_info)
+
+        initial_weight_entry = WeightEntry(
+            user_id=current_user.id,
+            weight=form.current_weight.data
+        )
+        db.session.add(initial_weight_entry)
+
         db.session.commit()
         
         workout_plan = workoutRecomendation(form.goal.data)
@@ -156,6 +178,52 @@ def mandatory_update():
 def index():
     return render_template("index.html")'''
 
+
+@bp.route("/weight-update", methods=["GET", "POST"])
+@login_required
+def weight_update():
+    form = WeightEntryForm()
+    last_entry = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).first()
+    next_update = None
+    if last_entry:
+        next_update = last_entry.date + timedelta(weeks=2)
+        today = datetime.utcnow().date()
+        if today < next_update:
+            next_update = next_update.strftime('%Y-%m-%d')
+            return render_template("weight_update.html", form=None, next_update=next_update)
+
+    if form.validate_on_submit():
+        weight_entry = WeightEntry(
+            user_id=current_user.id,
+            weight=form.weight.data
+        )
+        db.session.add(weight_entry)
+        db.session.commit()
+        flash("Your weight has been updated!")
+        return redirect(url_for("auth.weight_history"))
+
+    return render_template("weight_update.html", form=form, next_update=None)
+
+
+@bp.route("/weight-history")
+@login_required
+def weight_history():
+    weight_entries = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).all()
+    next_update = None
+    if weight_entries:
+        last_entry = weight_entries[0]
+        next_update = last_entry.date + timedelta(weeks=2)
+        today = datetime.utcnow().date()
+        if today < next_update:
+            next_update = next_update.strftime('%Y-%m-%d')
+        else:
+            next_update = None
+
+    return render_template("weight_history.html", weight_entries=weight_entries, next_update=next_update)
+
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
