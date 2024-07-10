@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Daily Check-In</title>
+</head>
+<body>
+  <h1>Daily Check-In</h1>
+  <form method="post">
+    <label for="did_workout">Did you workout today?</label>
+    <input type="checkbox" name="did_workout" id="did_workout">
+    
+    <label for="food_log">Food log (enter what you ate):</label>
+    <textarea name="food_log" id="food_log" required></textarea>
+    
+    <button type="submit">Submit</button>
+  </form>
+  <script>
+    document.getElementById('checkin-form').addEventListener('submit', function(event) {
+      event.preventDefault(); 
+
+    
+      let currentPoints = 150; 
+      let newPoints = currentPoints + 50;
+
+      let message = '';
+      if (newPoints = 2000) {
+        message = "You have reached 2000 points now, Congratulations, you are an Expert now!";
+      } else if (newPoints = 1800) {
+        message = "You have reached 1800 points now, Congratulations, you are a Pro now!";
+      } else if (newPoints = 1200) {
+        message = "You have reached 1200 points now, Congratulations, you are Intermediate now!";
+      } else if (newPoints = 200) {
+        message = "You have reached 200 points now, Congratulations, you are a Novice now!";
+      } else {
+        message = "You have gained 50 points!";
+      }
+
+   
+      alert(message);
+
+      this.submit();
+    });
+  </script>
+
+</body>
+</html>
