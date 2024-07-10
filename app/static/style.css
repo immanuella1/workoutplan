@@ -44,12 +44,16 @@ body{
 }
 .custom-input{
    width: 25em; /* Adjust width as needed */
-   height: 2em; /* Adjust height as needed */
+   height: 1.5em; /* Adjust height as needed */
    /* Additional styling if required */
 }
 
 .fields_lables{
    font-size: 2.5em;
+}
+
+.fields_lables2{
+   font-size: 2em;
 }
 
 .remind{ /* remember me */
@@ -58,6 +62,9 @@ body{
 
 .submit{
    font-size: 1em; 
+}
+.register{
+   font-size: .85em; 
 }
 
 .custom-checkbox { /* checkbox size */

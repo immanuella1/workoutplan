@@ -6,49 +6,53 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   </head>
 
-  <body>
-
+  <body class="main_page">  
+    <div class="center_main">
+    <div class="heading_style">
     <h1>Register</h1>
+    </div>
+    <div class="fields_lables2">
     <form method="post">
       {{ form.hidden_tag() }}
       <p>
         {{ form.username.label }}<br>
-        {{ form.username(size=32) }}<br>
+        {{ form.username(class_='custom-input') }}<br>
         {% for error in form.username.errors %}
           <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
       </p>
       <p>
         {{ form.email.label }}<br>
-        {{ form.email(size=32) }}<br>
+        {{ form.email(class_='custom-input') }}<br>
         {% for error in form.email.errors %}
           <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
       </p>
       <p>
         {{ form.phone_no.label }}<br>
-        {{ form.phone_no(size=15) }}<br>
+        {{ form.phone_no(class_='custom-input') }}<br>
         {% for error in form.phone_no.errors %}
           <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
       </p>
       <p>
         {{ form.password.label }}<br>
-        {{ form.password(size=32) }}<br>
+        {{ form.password(class_='custom-input') }}<br>
         {% for error in form.password.errors %}
           <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
       </p>
       <p>
         {{ form.password2.label }}<br>
-        {{ form.password2(size=32) }}<br>
+        {{ form.password2(class_='custom-input') }}<br>
         {% for error in form.password2.errors %}
           <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
       </p>
-      <p>{{ form.submit() }}</p>
+      <p>{{ form.submit(class_='register') }}</p>
     </form>
-    
+    </div>
+    </div>
   </body>
 
 </html>
