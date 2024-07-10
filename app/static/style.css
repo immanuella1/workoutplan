@@ -1,8 +1,17 @@
+body{
+   font-size: 10px;
+}
+.main_page{
+   background-color: beige;
+   background-color: red;
+}
 .center_main{
    text-align: center;
+   padding-top: 10%;
 }
 
-
-/*body{
-   color : red;
-}*/
+.heading_style{
+   font-style: normal ;
+   font-family: 'Courier New','Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+   font-size: 4em;
+}

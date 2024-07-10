@@ -6,10 +6,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
   </head>
-  <body>
-    <div class="center_main">
-    <h1>Hello, Workout!</h1>
-    
+  <body class="main_page">
+    <div class="center_main" >
+      <div class="heading_style">
+    <h1>HELLO WORKOUT!</h1>
+      </div>
     {% if current_user.is_authenticated %}
       <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
