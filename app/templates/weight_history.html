@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Your Weight History</title>
+</head>
+<body>
+  <h1>Your Weight History</h1>
+  <ul>
+    {% for entry in weight_entries %}
+      <li>{{ entry.date.strftime('%Y-%m-%d') }}: {{ entry.weight }} lbs</li>
+    {% endfor %}
+  </ul>
+  {% if next_update %}
+    <p>Next weight update is due on {{ next_update }}.</p>
+  {% else %}
+    <a href="{{ url_for('auth.weight_update') }}">Update Weight</a>
+  {% endif %}
+</body>
+</html>
