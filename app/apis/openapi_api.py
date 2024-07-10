@@ -3,17 +3,14 @@ import openai
 from dotenv import load_dotenv
 from openai import OpenAI
 
-
 # Load environment variables from a .env file
 load_dotenv()
 
 my_api_key = os.getenv("OPENAI_KEY")
 
-openai.api_key = my_api_key
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
-client = OpenAI(
-    api_key=my_api_key,
-)
+client = openai
 
 def workoutRecomendation(info):
 # Specify the model to use and the messages to send
@@ -38,7 +35,6 @@ def nutritionRecomendation(info):
         ]
     )
     return completion.choices[0].message.content
-
-
-if __name__ == "__main__":
-    print(workoutRecomendation("height:5'4'', weight: 170lbs, goal: loose 10lb and get stronger"))
+}
+#if __name__ == "__main__":
+#    recomendation()

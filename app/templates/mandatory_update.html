@@ -1,0 +1,31 @@
+<!-- This file serves as the UI for first time users. They must update information here  --> 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Update Your Information</title>
+</head>
+<body>
+  <h1>Update Your Information</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.height.label }}<br>
+      {{ form.height(size=32) }}
+    </p>
+    <p>
+      {{ form.current_weight.label }}<br>
+      {{ form.current_weight(size=32) }}
+    </p>
+    <p>
+      {{ form.goal.label }}<br>
+      {{ form.goal(size=32) }}  
+    </p>
+    <p>
+      {{ form.time_frame.label }}<br>
+      {{ form.time_frame(size=32) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+  </form>
+</body>
+</html>

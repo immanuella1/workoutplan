@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, FloatField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from app.models import User
 
@@ -22,8 +22,22 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+
+
+class UserInfoForm(FlaskForm):
+    height = FloatField('Height (in inches)', validators=[DataRequired()])  
+    current_weight = FloatField('Current Weight (in pounds)', validators=[DataRequired()]) 
+    goal = StringField('Goal', validators=[DataRequired()])  
+    time_frame = IntegerField('Time Frame (in weeks)', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
+
+class WeightEntryForm(FlaskForm):
+    weight = FloatField('Weight (in pounds)', validators=[DataRequired()])
+    submit = SubmitField('Submit')
