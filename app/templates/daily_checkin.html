@@ -6,15 +6,28 @@
 </head>
 <body>
   <h1>Daily Check-In</h1>
-  <form method="post">
-    <label for="did_workout">Did you workout today?</label>
-    <input type="checkbox" name="did_workout" id="did_workout">
-    
-    <label for="food_log">Food log (enter what you ate):</label>
-    <textarea name="food_log" id="food_log" required></textarea>
-    
-    <button type="submit">Submit</button>
-  </form>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  {% if existing_checkin %}
+    <p>You have already checked in today.</p>
+  {% else %}
+    <form method="post">
+      <label for="did_workout">Did you workout today?</label>
+      <input type="checkbox" name="did_workout" id="did_workout">
+      
+      <label for="food_log">Food log (enter what you ate):</label>
+      <textarea name="food_log" id="food_log" required></textarea>
+      
+      <button type="submit">Submit</button>
+    </form>
+  {% endif %}
   <script>
     document.getElementById('checkin-form').addEventListener('submit', function(event) {
       event.preventDefault(); 
