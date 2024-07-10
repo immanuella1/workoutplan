@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
+
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -10,6 +12,7 @@ def create_app():
     app.config.from_object('config.Config')
 
     db.init_app(app)
+    migrate = Migrate(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
@@ -20,3 +23,19 @@ def create_app():
         db.create_all()
 
     return app
+
+#incorporated flask migrate
+        
+def run_migrations():
+    from flask import current_app
+    with current_app.app_context():
+        from flask_migrate import upgrade
+        upgrade()
+        
+
+
+
+
+
+
+
