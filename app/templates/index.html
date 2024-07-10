@@ -9,7 +9,7 @@
   <body class="main_page">
     <div class="center_main" >
       <div class="heading_style">
-    <h1>HELLO WORKOUT!</h1>
+    <h1>Welcome to <br> Hello Workout!</h1>
       </div>
     {% if current_user.is_authenticated %}
       <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
@@ -18,7 +18,13 @@
         <button type="submit">Logout</button>
       </form>
     {% else %}
-      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p>
+      <p><div class="logreg_size"><a href="{{ url_for('auth.login') }}">Login</a>    <a href="{{ url_for('auth.register') }}">Register</a></div></p>
+      <div class="about">
+      <p > info about the application</p> <br>
+      </div>
+      <div class="features">
+      <p> features about ur application </p>
+      </div>
     {% endif %}
   </div>
   </body>
