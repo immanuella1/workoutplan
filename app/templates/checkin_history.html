@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Check-In History</title>
+</head>
+<body>
+  <h1>Check-In History</h1>
+  <ul>
+    {% for checkin in checkins %}
+      <li>
+        <strong>Date:</strong> {{ checkin.date }}<br>
+        <strong>Did Workout:</strong> {{ checkin.did_workout }}<br>
+        <strong>Total Calories:</strong> {{ checkin.total_calories }}<br>
+        <strong>Total Protein:</strong> {{ checkin.total_protein }}<br>
+        <strong>Total Sugars:</strong> {{ checkin.total_sugars }}<br>
+        <strong>Total Sodium:</strong> {{ checkin.total_sodium }}
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
