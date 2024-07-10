@@ -17,50 +17,49 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     phone_no = db.Column(db.String(15), nullable=True)
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
-    points = db.Column(db.Integer, default=0, nullable= True)
+    points = db.Column(db.Integer, default=0, nullable=True)
 
-#Put nullable as true insead of false
+    # Put nullable as true insead of false
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
     def add_points(self, points):
         self.points += points
-        
+
     @property
     def level(self):
         if self.points >= 2000:
-            return 'Expert'
+            return "Expert"
         elif self.points >= 1800:
-            return 'Pro'
+            return "Pro"
         elif self.points >= 1200:
-            return 'Intermediate'
+            return "Intermediate"
         elif self.points >= 200:
-            return 'Novice'
+            return "Novice"
         else:
-            return 'Beginner'
-        
+            return "Beginner"
 
     def __repr__(self):
-        return f'<User {self.username}>'    
-    
-    
+        return f"<User {self.username}>"
+
 
 class UserInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     height = db.Column(db.Float, nullable=False)
     current_weight = db.Column(db.Float, nullable=False)
-    goal_weight = db.Column(db.Float, nullable=False)
-    time_frame = db.Column(db.Integer, nullable=False)  
-    user = db.relationship('User', backref=db.backref('info', uselist=False))
+    goal = db.Column(db.String(255), nullable=False)
+    time_frame = db.Column(db.Integer, nullable=False)
+    user = db.relationship("User", backref=db.backref("info", uselist=False))
 
     def __repr__(self):
-        return f'<UserInfo {self.user_id}>'
-    
+        return f"<UserInfo {self.user_id}>"
+
+
 class DailyCheckIn(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, default=date.today, nullable=False)
@@ -69,14 +68,12 @@ class DailyCheckIn(db.Model):
     total_protein = db.Column(db.Float, nullable=True)
     total_sugars = db.Column(db.Float, nullable=True)
     total_sodium = db.Column(db.Float, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('daily_checkins', lazy=True))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user = db.relationship("User", backref=db.backref("daily_checkins", lazy=True))
 
     __table_args__ = (
-        db.UniqueConstraint('user_id', 'date', name='unique_user_date_checkin'),
+        db.UniqueConstraint("user_id", "date", name="unique_user_date_checkin"),
     )
 
     def __repr__(self):
-        return f'<DailyCheckIn {self.date} for User {self.user_id}>'
-
-
+        return f"<DailyCheckIn {self.date} for User {self.user_id}>"
