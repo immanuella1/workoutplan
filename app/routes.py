@@ -190,10 +190,14 @@ def daily_checkin():
                     total_protein=nutrition_data.get("total_protein"),
                     total_sugars=nutrition_data.get("total_sugars"),
                     total_sodium=nutrition_data.get("total_sodium"),
-                    points_earned=50,
+    
                 )
-
-                current_user.add_points(50)
+                user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+                if user_info:
+                    user_info.add_points(50)
+                else:
+                    flash("User info not found. Please update your information.")
+                    return redirect(url_for("auth.mandatory_update"))
                 db.session.add(checkin)
                 db.session.commit()
                 flash("Check-in successful! You earned 50 points")
@@ -209,8 +213,9 @@ def daily_checkin():
 @bp.route("/checkin-history")
 @login_required
 def checkin_history():
-    checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).all()
-    return render_template("checkin_history.html", checkins=checkins)
+    checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).order_by(DailyCheckIn.date.desc()).all()
+    user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+    return render_template("checkin_history.html", checkins=checkins, total_points=user_info.points_earned if user_info else 0)
 
 
 # Upon registration, users must update their personal info

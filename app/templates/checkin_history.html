@@ -16,15 +16,17 @@
       <li>
         <strong>Date:</strong> {{ checkin.date }}<br>
         <strong>Did Workout:</strong> {{ checkin.did_workout }}<br>
-        <strong>Total Points Earned:</strong> {{checkin.points_earned}} <br>
         <strong>Total Calories:</strong> {{ checkin.total_calories }}<br>
         <strong>Total Protein:</strong> {{ checkin.total_protein }}<br>
         <strong>Total Sugars:</strong> {{ checkin.total_sugars }}<br>
-        <strong>Total Sodium:</strong> {{ checkin.total_sodium }}
+        <strong>Total Sodium:</strong> {{ checkin.total_sodium }}<br>
+        <strong>Total Points Earned:</strong> {{ total_points }}
       </li>
     {% endfor %}
   </ul>
+    
   <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
-  
+  </div>
+</div>
 </body>
 </html>
