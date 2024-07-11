@@ -9,8 +9,7 @@
   <div class="center_main">
   <div class="heading_style">
   <h1>Daily Check-In</h1>
-  </div>
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul>
         {% for message in messages %}
