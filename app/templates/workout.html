@@ -19,45 +19,61 @@
         <h2>Workout Plan Details</h2>
       </div>
       <div class="workout-container">
+        <div class="text_size">
         <div class="day active" data-day="0">
-            <h3>Monday</h3>
-            <p>{{ workout_plan.monday }}</p>
+          <div class="fields_lables">
+          <h3>Monday</h3>
+          </div>
+          <p id="monday">{{ workout_plan.monday }}</p>
         </div>
         <div class="day" data-day="1">
-            <h3>Tuesday</h3>
-            <p>{{ workout_plan.tuesday }}</p>
+          <div class="fields_lables">
+          <h3>Tuesday</h3>
+        </div>
+          <p id="tuesday">{{ workout_plan.tuesday }}</p>
         </div>
         <div class="day" data-day="2">
-            <h3>Wednesday</h3>
-            <p>{{ workout_plan.wednesday }}</p>
+          <div class="fields_lables">
+          <h3>Wednesday</h3>
+        </div>
+          <p id="wednesday">{{ workout_plan.wednesday }}</p>
         </div>
         <div class="day" data-day="3">
-            <h3>Thursday</h3>
-            <p>{{ workout_plan.thursday }}</p>
+          <div class="fields_lables">
+          <h3>Thursday</h3>
+        </div>
+          <p id="thursday">{{ workout_plan.thursday }}</p>
         </div>
         <div class="day" data-day="4">
-            <h3>Friday</h3>
-            <p>{{ workout_plan.friday }}</p>
+          <div class="fields_lables">
+          <h3>Friday</h3>
+        </div>
+          <p id="friday">{{ workout_plan.friday }}</p>
         </div>
         <div class="day" data-day="5">
-            <h3>Saturday</h3>
-            <p>{{ workout_plan.saturday }}</p>
+          <div class="fields_lables">
+          <h3>Saturday</h3>
+        </div>
+          <p id="saturday">{{ workout_plan.saturday }}</p>
         </div>
         <div class="day" data-day="6">
-            <h3>Sunday</h3>
-            <p>{{ workout_plan.sunday }}</p>
+          <div class="fields_lables">
+          <h3>Sunday</h3>
         </div>
-    </div>
-
-    <button class="prev-btn">Prev</button>
-    <button class="next-btn">Next</button>
-
-    <div class="heading_style">
+          <p id="sunday">{{ workout_plan.sunday }}</p>
+        </div>
+      </div>
+      </div>
+  
+      <button class="prev-btn">Prev</button>
+      <button class="next-btn">Next</button>
+  
+      <div class="heading_style">
         <h2>Nutrition Goals</h2>
-    </div>
-    <div class="text_size">
+      </div>
+      <div class="text_size">
         <p>{{ workout_plan.nutrition_goals }}</p>
-    </div>
+      </div>
       {% else %}
       <div class="text_size">
         <p>No workout plan available. Please update your information first.</p>
@@ -71,29 +87,47 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var currentDay = 0;
-            var totalDays = $('.day').length;
+      $(document).ready(function() {
+        var currentDay = 0;
+        var totalDays = $('.day').length;
 
-            function showDay(day) {
-                $('.day').removeClass('active').eq(day).addClass('active');
-            }
+        function showDay(day) {
+          $('.day').removeClass('active').eq(day).addClass('active');
+        }
 
-            $('.next-btn').click(function() {
-                if (currentDay < totalDays - 1) {
-                    currentDay++;
-                    showDay(currentDay);
-                }
-            });
-
-            $('.prev-btn').click(function() {
-                if (currentDay > 0) {
-                    currentDay--;
-                    showDay(currentDay);
-                }
-            });
-            showDay(currentDay); // Initialize the first day view
+        $('.next-btn').click(function() {
+          if (currentDay < totalDays - 1) {
+            currentDay++;
+            showDay(currentDay);
+          }
         });
+
+        $('.prev-btn').click(function() {
+          if (currentDay > 0) {
+            currentDay--;
+            showDay(currentDay);
+          }
+        });
+
+        showDay(currentDay); // Initialize the first day view
+
+        // Format workout plans
+        function formatWorkoutPlan(id) {
+          var workoutText = $(id).text();
+          var formattedText = workoutText.split('-').map(function(item) {
+            return item.trim() ? '<li>' + item.trim() + '</li>' : '';
+          }).join('');
+          $(id).html('<ul>' + formattedText + '</ul>');
+        }
+
+        formatWorkoutPlan('#monday');
+        formatWorkoutPlan('#tuesday');
+        formatWorkoutPlan('#wednesday');
+        formatWorkoutPlan('#thursday');
+        formatWorkoutPlan('#friday');
+        formatWorkoutPlan('#saturday');
+        formatWorkoutPlan('#sunday');
+      });
     </script>
   </body>
 </html>
