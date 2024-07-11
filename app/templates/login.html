@@ -31,8 +31,9 @@
         {{ form.remember_me(class_='custom-checkbox') }} {{ form.remember_me.label }}
       </p>
       <p>{{ form.submit(class_='submit') }}</p>
-      </div>
+      
     </form>
     <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register Here!</a></p>
+  </div>
   </body>
 </html>

@@ -11,7 +11,9 @@
     <div class="heading_style">
     <h1>Welcome to <br> Hello Workout!</h1>
     </div>
+   
     {% if current_user.is_authenticated %}
+    <div class="text_size">
       <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
       {% if next_update %}
@@ -23,6 +25,7 @@
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
+    </div>
     {% else %}
       <p><div class="logreg_size"><a href="{{ url_for('auth.login') }}">Login</a>    <a href="{{ url_for('auth.register') }}">Register</a></div></p>
       <div class="about">
@@ -32,6 +35,7 @@
       <p> features about ur application </p>
       </div>
     {% endif %}
+  
   </div>
   </body>
 </html>

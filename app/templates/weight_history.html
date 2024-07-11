@@ -3,18 +3,29 @@
 <head>
   <meta charset="utf-8">
   <title>Your Weight History</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page" >
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Your Weight History</h1>
+  </div>
+  <div class="text_size">
   <ul>
     {% for entry in weight_entries %}
       <li>{{ entry.date.strftime('%Y-%m-%d') }}: {{ entry.weight }} lbs</li>
     {% endfor %}
   </ul>
   {% if next_update %}
+    <div class="text_size">
     <p>Next weight update is due on {{ next_update }}.</p>
+  </div>
+  </div>
   {% else %}
+  <div class="fields_lables">
     <a href="{{ url_for('auth.weight_update') }}">Update Weight</a>
+  </div>
   {% endif %}
+  </div>
 </body>
 </html>

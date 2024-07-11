@@ -66,8 +66,18 @@ body{
 .submit{
    font-size: 1em; 
 }
+
 .register{
-   font-size: .85em; 
+   font-size: .9rem; 
+}
+
+.text_size{
+   font-size: 1.5rem;
+   margin-top: 3rem;
+}
+
+.margins{
+   margin-top: 3rem;
 }
 
 .custom-checkbox { /* checkbox size */

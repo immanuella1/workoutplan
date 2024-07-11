@@ -20,16 +20,24 @@
     {% endif %}
   {% endwith %}
   {% if existing_checkin %}
+  <div class="text_size">
     <p>You have already checked in today.</p>
+  </div>
   {% else %}
     <form method="post">
+      <div class="text_size">
+      <div class="custom-checkbox">
       <label for="did_workout">Did you workout today?</label>
-      <input type="checkbox" name="did_workout" id="did_workout">
-      
+      <input type="checkbox" name="did_workout" id="did_workout"><br>
+      </div>
+      </div>
+      <div class="text_size">
       <label for="food_log">Food log (enter what you ate):</label>
       <textarea name="food_log" id="food_log" required></textarea>
-      
+      </div>
+    <div class="text_size">
       <button type="submit">Submit</button>
+    </div>
     </form>
   {% endif %}
   </div>

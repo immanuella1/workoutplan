@@ -5,8 +5,11 @@
   <title>Nutrition Data</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Nutrition Data</h1>
+  </div>
   <form method="post">
     <input type="text" name="query" placeholder="Enter food item" required>
     <button type="submit">Fetch Nutrition Data</button>
@@ -19,5 +22,6 @@
   <p>Total Sugars: {{ nutrition_data.total_sugars }}</p>
   <p>Total Sodium: {{ nutrition_data.total_sodium }}</p>
   {% endif %}
+  </div>
 </body>
 </html>
