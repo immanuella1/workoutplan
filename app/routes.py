@@ -11,12 +11,67 @@ from flask import (
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
 from app.models import User, DailyCheckIn, UserInfo, WeightEntry, Workouts
-from app.forms.forms import RegistrationForm, LoginForm, UserInfoForm, WeightEntryForm
+from app.forms.forms import (
+    RegistrationForm,
+    LoginForm,
+    UserInfoForm,
+    WeightEntryForm,
+    UpdateUserInfoForm,
+)
 from app.apis.nutrition_api import nutrition_calculator
 from datetime import date, datetime, timedelta
 from app.apis.openapi_api import workoutRecommendation
 
 bp = Blueprint("auth", __name__)
+
+
+############# HELPER FUNCTIONS ################################################
+def generate_workout_plan(goal, height, current_weight):
+    workout_plan = workoutRecommendation(goal, height, current_weight)
+
+    lines = workout_plan.split("\n")
+    days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+        "Nutrition Goals",
+    ]
+    workout_dict = {day: "" for day in days}
+
+    current_day = None
+    for line in lines:
+        if any(day in line for day in days):
+            current_day = next(day for day in days if day in line)
+            workout_dict[current_day] += (
+                line.split(f"{current_day}: ")[1] if ": " in line else ""
+            )
+        elif current_day:
+            workout_dict[current_day] += f"\n{line.strip()}"
+
+    return workout_dict
+
+
+def save_workout_plan(user_id, workout_dict):
+    new_workout = Workouts(
+        user_id=user_id,
+        monday=workout_dict.get("Monday", "").strip(),
+        tuesday=workout_dict.get("Tuesday", "").strip(),
+        wednesday=workout_dict.get("Wednesday", "").strip(),
+        thursday=workout_dict.get("Thursday", "").strip(),
+        friday=workout_dict.get("Friday", "").strip(),
+        saturday=workout_dict.get("Saturday", "").strip(),
+        sunday=workout_dict.get("Sunday", "").strip(),
+        nutrition_goals=workout_dict.get("Nutrition Goals", "").strip(),
+    )
+    db.session.add(new_workout)
+    db.session.commit()
+
+
+####################################################################################
 
 
 # HOME PAGE
@@ -135,7 +190,7 @@ def daily_checkin():
                     total_protein=nutrition_data.get("total_protein"),
                     total_sugars=nutrition_data.get("total_sugars"),
                     total_sodium=nutrition_data.get("total_sodium"),
-                    points_earned=50
+                    points_earned=50,
                 )
 
                 current_user.add_points(50)
@@ -181,48 +236,10 @@ def mandatory_update():
         )
         db.session.add(initial_weight_entry)
 
-        workout_plan = workoutRecommendation(
+        workout_dict = generate_workout_plan(
             form.goal.data, form.height.data, form.current_weight.data
         )
-        # print(workout_plan)
-
-        lines = workout_plan.split("\n")
-        days = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-            "Nutrition Goals",
-        ]
-        workout_dict = {day: "" for day in days}
-
-        current_day = None
-        for line in lines:
-            if any(day in line for day in days):
-                current_day = next(day for day in days if day in line)
-                workout_dict[current_day] += (
-                    line.split(f"{current_day}: ")[1] if ": " in line else ""
-                )
-            elif current_day:
-                workout_dict[current_day] += f"\n{line.strip()}"
-
-        new_workout = Workouts(
-            user_id=current_user.id,
-            monday=workout_dict.get("Monday", "").strip(),
-            tuesday=workout_dict.get("Tuesday", "").strip(),
-            wednesday=workout_dict.get("Wednesday", "").strip(),
-            thursday=workout_dict.get("Thursday", "").strip(),
-            friday=workout_dict.get("Friday", "").strip(),
-            saturday=workout_dict.get("Saturday", "").strip(),
-            sunday=workout_dict.get("Sunday", "").strip(),
-            nutrition_goals=workout_dict.get("Nutrition Goals", "").strip(),
-        )
-        db.session.add(new_workout)
-
-        db.session.commit()
+        save_workout_plan(current_user.id, workout_dict)
 
         flash("Your information has been saved.")
         flash(workout_dict, "workout_plan")
@@ -288,30 +305,40 @@ def weight_history():
         else:
             next_update = None
 
-    return render_template("weight_history.html", weight_entries=weight_entries, next_update=next_update)
+    return render_template(
+        "weight_history.html", weight_entries=weight_entries, next_update=next_update
+    )
+
 
 @bp.route("/update_info", methods=["GET", "POST"])
 @login_required
 def update_info():
-    form = UserInfoForm()
-    if form.validate_on_submit():
-        user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
-        if not user_info:
-            flash("User information not found.")
-            return redirect(url_for("auth.index"))
+    user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+    if not user_info:
+        flash("User information not found.")
+        return redirect(url_for("auth.index"))
 
-        user_info.height = form.height.data
-        user_info.current_weight = form.current_weight.data
+    form = UpdateUserInfoForm(obj=user_info)
+    if form.validate_on_submit():
         user_info.goal = form.goal.data
         user_info.time_frame = form.time_frame.data
 
-        db.session.commit()
+        old_workout = Workouts.query.filter_by(user_id=current_user.id).first()
+        if old_workout:
+            db.session.delete(old_workout)
 
-        flash("Your information has been updated.")
+        workout_dict = generate_workout_plan(
+            form.goal.data, user_info.height, user_info.current_weight
+        )
+        save_workout_plan(current_user.id, workout_dict)
+
+        db.session.commit()
+        flash(
+            "Your information has been updated and a new workout plan has been generated."
+        )
         return redirect(url_for("auth.index"))
 
     return render_template("update_info.html", form=form)
-
 
 
 @login_manager.user_loader
