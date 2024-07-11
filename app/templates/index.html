@@ -27,6 +27,9 @@
         <button type="submit">Logout</button>
       </form>
     </div>
+    <div id="dailyReminder" class="daily_style">
+      <p>Don't forget to check in today!</p>
+    </div>
     {% else %}
     <div class="logreg_size">
       <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
@@ -38,5 +41,19 @@
     <p>features section</p>
     </div>
       {% endif %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      const dailyReminder = document.getElementById('dailyReminder');
+  
+      // Check if the daily reminder message should be displayed
+      const shouldDisplayReminder = '{{ should_display_reminder }}' === 'True';
+  
+      if (shouldDisplayReminder) {
+      // Display the daily reminder message
+      dailyReminder.style.display = 'block';
+      }
+    });
+
+    </script>
   </body>
 </html>

@@ -83,3 +83,7 @@ body{
 .custom-checkbox { /* checkbox size */
    transform: scale(1.3);
 }
+
+.daily_style{
+   display: none;
+}

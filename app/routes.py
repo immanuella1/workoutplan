@@ -121,6 +121,7 @@ def daily_checkin():
                 db.session.add(checkin)
                 db.session.commit()
                 flash("Check-in successful!")
+                should_display_reminder = False
                 return redirect(url_for("auth.checkin_history"))
             except Exception as e:
                 db.session.rollback()
