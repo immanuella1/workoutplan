@@ -88,42 +88,41 @@ body{
 }
 
 .workout-container {
-   display: flex;
-   overflow-x: scroll; 
-   white-space: nowrap; 
-   padding: 30em;
-   scroll-behavior: smooth;
+   position: relative;
+   overflow: hidden;
+   height: 30em; 
 }
+
 .day {
    display: none;
    position: absolute;
    width: 100%;
    top: 0;
    left: 0;
-   padding: 1em;
+   padding: 1em; 
    box-sizing: border-box;
 }
+
 .day.active {
    display: block;
 }
 
 .prev-btn, .next-btn {
-   position: fixed;
+   position: absolute;
    top: 50%;
    transform: translateY(-50%);
-   padding: 1em;
-   font-size: 1.6em;
+   padding: 1em; 
+   font-size: 1.6em; 
    background-color: #f0f0f0;
    border: none;
    cursor: pointer;
    z-index: 100;
 }
 
-.prev-btn {
-   left: 1em;
+.prev-btn { /* move to left side */
+   left: 1em; 
 }
 
-.next-btn {
-   right: 1em;
+.next-btn {/* move to right side */
+   right: 1em; 
 }
-
