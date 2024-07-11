@@ -135,11 +135,13 @@ def daily_checkin():
                     total_protein=nutrition_data.get("total_protein"),
                     total_sugars=nutrition_data.get("total_sugars"),
                     total_sodium=nutrition_data.get("total_sodium"),
+                    points_earned=50
                 )
 
+                current_user.add_points(50)
                 db.session.add(checkin)
                 db.session.commit()
-                flash("Check-in successful!")
+                flash("Check-in successful! You earned 50 points")
                 return redirect(url_for("auth.checkin_history"))
             except Exception as e:
                 db.session.rollback()
@@ -286,9 +288,30 @@ def weight_history():
         else:
             next_update = None
 
-    return render_template(
-        "weight_history.html", weight_entries=weight_entries, next_update=next_update
-    )
+    return render_template("weight_history.html", weight_entries=weight_entries, next_update=next_update)
+
+@bp.route("/update_info", methods=["GET", "POST"])
+@login_required
+def update_info():
+    form = UserInfoForm()
+    if form.validate_on_submit():
+        user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+        if not user_info:
+            flash("User information not found.")
+            return redirect(url_for("auth.index"))
+
+        user_info.height = form.height.data
+        user_info.current_weight = form.current_weight.data
+        user_info.goal = form.goal.data
+        user_info.time_frame = form.time_frame.data
+
+        db.session.commit()
+
+        flash("Your information has been updated.")
+        return redirect(url_for("auth.index"))
+
+    return render_template("update_info.html", form=form)
+
 
 
 @login_manager.user_loader

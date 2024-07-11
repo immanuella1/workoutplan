@@ -3,26 +3,32 @@
 <head>
   <meta charset="utf-8">
   <title>Hello, Workout!</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
+<body class="main_page">
+  <div class="center_main">
+    <div class="heading_style">
+      <h1>Welcome to <br> Hello Workout!</h1>
+    </div>
 
-<body>
-
-  <h1>Hello, Workout!</h1>
-  {% if current_user.is_authenticated %}
-    <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>
-    <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
-    <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
-    {% if next_update %}
-      <p>Next weight update is due on {{ next_update }}.</p>
-    {% else %}
-      <p><a href="{{ url_for('auth.weight_update') }}">Update Weight</a></p>
-    {% endif %}
-    <p><a href="{{ url_for('auth.weight_history') }}">Weight History</a></p>
-    <form method="POST" action="{{ url_for('auth.logout') }}">
-      <button type="submit">Logout</button>
-    </form>
+    {% if current_user.is_authenticated %}
+    <div class="text_size">
+      <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
+      <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
+      <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
+      {% if next_update %}
+        <p>Next weight update is due on {{ next_update }}.</p>
+      {% else %}
+        <p><a href="{{ url_for('auth.weight_update') }}">Update Weight</a></p>
+      {% endif %}
+      <p><a href="{{ url_for('auth.weight_history') }}">Weight History</a></p>
+      <p><a href="{{ url_for('auth.update_info') }}">Update Your Information</a></p>
+      <form method="POST" action="{{ url_for('auth.logout') }}">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
 
     <h2>Your Weight History Graph</h2>
     <canvas id="weightHistoryChart" width="400" height="200"></canvas>
@@ -70,9 +76,17 @@
         .catch(error => console.error('Error fetching weight history data:', error));
     </script>
 
-  {% else %}
-    <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p> 
-  {% endif %}
-
+    {% else %}
+    <div class="logreg_size">
+      <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
+    </div>
+    <div class="about">
+      <p>about section</p>
+    </div>
+    <div class="features">
+      <p>features section</p>
+    </div>
+    {% endif %}
+  </div>
 </body>
 </html>

@@ -3,31 +3,41 @@
 <head>
   <meta charset="utf-8">
   <title>Daily Check-In</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Daily Check-In</h1>
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul>
-        {% for message in messages %}
+        {% for category, message in messages %}
           <li>{{ message }}</li>
         {% endfor %}
       </ul>
     {% endif %}
   {% endwith %}
   {% if existing_checkin %}
+  <div class="text_size">
     <p>You have already checked in today.</p>
+  </div>
   {% else %}
-    <form method="post">
+    <form method="post" id="checkin-form">
       <label for="did_workout">Did you workout today?</label>
-      <input type="checkbox" name="did_workout" id="did_workout">
-      
+      <input type="checkbox" name="did_workout" id="did_workout"><br>
+      </div>
+      </div>
+      <div class="text_size">
       <label for="food_log">Food log (enter what you ate):</label>
       <textarea name="food_log" id="food_log" required></textarea>
-      
+      </div>
+    <div class="text_size">
       <button type="submit">Submit</button>
+    </div>
     </form>
   {% endif %}
+  </div>
   <script>
     document.getElementById('checkin-form').addEventListener('submit', function(event) {
       event.preventDefault(); 
@@ -37,24 +47,34 @@
       let newPoints = currentPoints + 50;
 
       let message = '';
-      if (newPoints = 2000) {
+      if (newPoints === 2000) {
         message = "You have reached 2000 points now, Congratulations, you are an Expert now!";
-      } else if (newPoints = 1800) {
+      } else if (newPoints === 1800) {
         message = "You have reached 1800 points now, Congratulations, you are a Pro now!";
-      } else if (newPoints = 1200) {
+      } else if (newPoints === 1200) {
         message = "You have reached 1200 points now, Congratulations, you are Intermediate now!";
-      } else if (newPoints = 200) {
+      } else if (newPoints === 600) {
+        message = "You have reached 600 points now, Congratulations, you are a Novice now!";
+      } else if (newPoints === 200) {
         message = "You have reached 200 points now, Congratulations, you are a Novice now!";
-      } else {
-        message = "You have gained 50 points!";
-      }
+      } else: 
+      {message = "You have gained 50 points!";}
+    
 
    
       alert(message);
+        
+      let okButton = document.createElement('button');
+      okButton.textContent = 'OK';
+      okButton.addEventListener('click', function() {
+        this.parentNode.removeChild(this); 
+        return false; 
+      });
+      document.body.appendChild(okButton);
 
       this.submit();
     });
   </script>
-
+  <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
 </body>
 </html>

@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+my_api_key = os.getenv("OPENAI_KEY")
+
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 client = openai
@@ -18,4 +20,16 @@ def workoutRecommendation(goal, height, current_weight):
     )  
     return completion.choices[0].message.content
 
-# print(workoutRecommendation("I want to improve my sprint time in the 100m from 12 seconds to 11.5"))
+def nutritionRecomendation(info):
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            #messages needs to be revised and changed 
+            {"role": "system", "content": "You are giving the user a nutritional information based on the personal information given"},
+            {"role": "user", "content": f'Using this information {info}, create a nutritional plan'} 
+        ]
+    )
+    return completion.choices[0].message.content
+
+#if __name__ == "__main__":
+#    recomendation()

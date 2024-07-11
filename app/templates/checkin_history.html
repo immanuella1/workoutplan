@@ -3,14 +3,20 @@
 <head>
   <meta charset="utf-8">
   <title>Check-In History</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Check-In History</h1>
+  </div>
+  <div class="text_size">
   <ul>
     {% for checkin in checkins %}
       <li>
         <strong>Date:</strong> {{ checkin.date }}<br>
         <strong>Did Workout:</strong> {{ checkin.did_workout }}<br>
+        <strong>Total Points Earned:</strong> {{checkin.points_earned}} <br>
         <strong>Total Calories:</strong> {{ checkin.total_calories }}<br>
         <strong>Total Protein:</strong> {{ checkin.total_protein }}<br>
         <strong>Total Sugars:</strong> {{ checkin.total_sugars }}<br>
@@ -18,5 +24,7 @@
       </li>
     {% endfor %}
   </ul>
+  <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
+  
 </body>
 </html>

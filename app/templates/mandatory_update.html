@@ -4,28 +4,37 @@
 <head>
   <meta charset="utf-8">
   <title>Update Your Information</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-  <h1>Update Your Information</h1>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
+  <div class="smaller_heading_style">
+  <h1>Update Your<br>Information</h1>
+  </div>
+  </div>
+  <div class="remind">
   <form method="post">
     {{ form.hidden_tag() }}
     <p>
       {{ form.height.label }}<br>
-      {{ form.height(size=32) }}
+      {{ form.height(class_='custom-input') }}
     </p>
     <p>
       {{ form.current_weight.label }}<br>
-      {{ form.current_weight(size=32) }}
+      {{ form.current_weight(class_='custom-input') }}
     </p>
     <p>
       {{ form.goal.label }}<br>
-      {{ form.goal(size=32) }}  
+      {{ form.goal(class_='custom-input') }}  
     </p>
     <p>
       {{ form.time_frame.label }}<br>
-      {{ form.time_frame(size=32) }}
+      {{ form.time_frame(class_='custom-input') }}
     </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class_='register') }}</p>
   </form>
+  </div>
+  </div>
 </body>
 </html>
