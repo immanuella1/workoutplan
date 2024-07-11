@@ -118,6 +118,41 @@ def register():
     return render_template("register.html", form=form)
 
 
+# Mandatory route upon registration
+@bp.route("/mandatory-update", methods=["GET", "POST"])
+@login_required
+def mandatory_update():
+    if UserInfo.query.filter_by(user_id=current_user.id).first():
+        return redirect(url_for("auth.index"))
+
+    form = UserInfoForm()
+    if form.validate_on_submit():
+        user_info = UserInfo(
+            user_id=current_user.id,
+            height=form.height.data,
+            current_weight=form.current_weight.data,
+            goal=form.goal.data,
+            time_frame=form.time_frame.data,
+        )
+        db.session.add(user_info)
+
+        initial_weight_entry = WeightEntry(
+            user_id=current_user.id, weight=form.current_weight.data
+        )
+        db.session.add(initial_weight_entry)
+
+        workout_dict = generate_workout_plan(
+            form.goal.data, form.height.data, form.current_weight.data
+        )
+        save_workout_plan(current_user.id, workout_dict)
+
+        flash("Your information has been saved.")
+        flash(workout_dict, "workout_plan")
+        return redirect(url_for("auth.index"))
+
+    return render_template("mandatory_update.html", form=form)
+
+
 # LOGIN ROUTE
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -146,22 +181,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("auth.index"))
-
-
-# USED TO CREATE GRAPH
-@bp.route("/weight-history-data")
-@login_required
-def weight_history_data():
-    weight_entries = (
-        WeightEntry.query.filter_by(user_id=current_user.id)
-        .order_by(WeightEntry.date.asc())
-        .all()
-    )
-    data = {
-        "dates": [entry.date.strftime("%Y-%m-%d") for entry in weight_entries],
-        "weights": [entry.weight for entry in weight_entries],
-    }
-    return jsonify(data)
 
 
 # DAILY CHECK IN ROUTE
@@ -205,47 +224,12 @@ def daily_checkin():
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
 
 
-# CHECK IN HISTORY
+# Route to check in with daily work out
 @bp.route("/checkin-history")
 @login_required
 def checkin_history():
     checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).all()
     return render_template("checkin_history.html", checkins=checkins)
-
-
-# Upon registration, users must update their personal info
-@bp.route("/mandatory-update", methods=["GET", "POST"])
-@login_required
-def mandatory_update():
-    if UserInfo.query.filter_by(user_id=current_user.id).first():
-        return redirect(url_for("auth.index"))
-
-    form = UserInfoForm()
-    if form.validate_on_submit():
-        user_info = UserInfo(
-            user_id=current_user.id,
-            height=form.height.data,
-            current_weight=form.current_weight.data,
-            goal=form.goal.data,
-            time_frame=form.time_frame.data,
-        )
-        db.session.add(user_info)
-
-        initial_weight_entry = WeightEntry(
-            user_id=current_user.id, weight=form.current_weight.data
-        )
-        db.session.add(initial_weight_entry)
-
-        workout_dict = generate_workout_plan(
-            form.goal.data, form.height.data, form.current_weight.data
-        )
-        save_workout_plan(current_user.id, workout_dict)
-
-        flash("Your information has been saved.")
-        flash(workout_dict, "workout_plan")
-        return redirect(url_for("auth.index"))
-
-    return render_template("mandatory_update.html", form=form)
 
 
 # Display workouts
@@ -286,7 +270,23 @@ def weight_update():
     return render_template("weight_update.html", form=form, next_update=None)
 
 
-# Check weight history route
+# Used to create graph
+@bp.route("/weight-history-data")
+@login_required
+def weight_history_data():
+    weight_entries = (
+        WeightEntry.query.filter_by(user_id=current_user.id)
+        .order_by(WeightEntry.date.asc())
+        .all()
+    )
+    data = {
+        "dates": [entry.date.strftime("%Y-%m-%d") for entry in weight_entries],
+        "weights": [entry.weight for entry in weight_entries],
+    }
+    return jsonify(data)
+
+
+# Route to check weight history
 @bp.route("/weight-history")
 @login_required
 def weight_history():
@@ -305,11 +305,10 @@ def weight_history():
         else:
             next_update = None
 
-    return render_template(
-        "weight_history.html", weight_entries=weight_entries, next_update=next_update
-    )
+    return render_template("weight_history.html", next_update=next_update)
 
 
+# Route to update goals
 @bp.route("/update_info", methods=["GET", "POST"])
 @login_required
 def update_info():
