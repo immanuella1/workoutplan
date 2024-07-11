@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>Update User Info</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="main_page">  
-  <div class="center_main">
   <div class="heading_style">
   <h1>Update Your Information</h1>
   </div>
@@ -24,16 +24,18 @@
     <input type="number" id="time_frame" name="time_frame" required><br>
     
     <button type="submit">Update</button>
-  </div>
+  
   </form>
 
-  <a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+  <br><a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+</div>
   <script>
     document.getElementById('update-form').addEventListener('submit', function(event) {
       
       window.location.href = "{{ url_for('auth.index') }}";
     });
   </script>
-  </div>
+</div>
+  
 </body>
 </html>
