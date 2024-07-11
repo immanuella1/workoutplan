@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <title>Hello, Workout!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body class="main_page">
   <div class="center_main">
@@ -32,50 +30,6 @@
 
     <h2>Your Weight History Graph</h2>
     <canvas id="weightHistoryChart" width="400" height="200"></canvas>
-
-    <script>
-      fetch('{{ url_for("auth.weight_history_data") }}')
-        .then(response => response.json())
-        .then(data => {
-          console.log('Fetched data:', data); // Debug log
-          const ctx = document.getElementById('weightHistoryChart').getContext('2d');
-          const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: data.dates,
-              datasets: [{
-                label: 'Weight (lbs)',
-                data: data.weights,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              scales: {
-                x: {
-                  type: 'time',
-                  time: {
-                    unit: 'day'
-                  },
-                  title: {
-                    display: true,
-                    text: 'Date'
-                  }
-                },
-                y: {
-                  title: {
-                    display: true,
-                    text: 'Weight (lbs)'
-                  }
-                }
-              }
-            }
-          });
-        })
-        .catch(error => console.error('Error fetching weight history data:', error));
-    </script>
-
     {% else %}
     <div class="logreg_size">
       <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
