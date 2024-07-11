@@ -1,4 +1,13 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, get_flashed_messages
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
+    get_flashed_messages,
+    jsonify,
+)
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
 from app.models import User, DailyCheckIn, UserInfo, WeightEntry, Workouts
@@ -10,6 +19,28 @@ from app.apis.openapi_api import workoutRecommendation
 bp = Blueprint("auth", __name__)
 
 
+# HOME PAGE
+@bp.route("/")
+def index():
+    if current_user.is_authenticated:
+        last_entry = (
+            WeightEntry.query.filter_by(user_id=current_user.id)
+            .order_by(WeightEntry.date.desc())
+            .first()
+        )
+        next_update = None
+        if last_entry:
+            next_update = last_entry.date + timedelta(weeks=2)
+            today = datetime.utcnow().date()
+            if today < next_update:
+                next_update = next_update.strftime("%Y-%m-%d")
+
+        return render_template("index.html", next_update=next_update)
+    else:
+        return render_template("index.html")
+
+
+# REGISTRATION ROUTE
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
@@ -26,12 +57,13 @@ def register():
         db.session.commit()
         login_user(user)
         if not UserInfo.query.filter_by(user_id=user.id).first():
-            return redirect(url_for('auth.mandatory_update'))
-        
+            return redirect(url_for("auth.mandatory_update"))
+
         return redirect(url_for("auth.login"))
     return render_template("register.html", form=form)
 
 
+# LOGIN ROUTE
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -53,6 +85,7 @@ def login():
     return render_template("login.html", form=form)
 
 
+# LOGOUT BUTTON FUNCTIONALITY
 @bp.route("/logout", methods=["POST"])
 @login_required
 def logout():
@@ -60,37 +93,23 @@ def logout():
     return redirect(url_for("auth.index"))
 
 
-@bp.route("/")
-def index():
-    if current_user.is_authenticated:
-        last_entry = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).first()
-        next_update = None
-        if last_entry:
-            next_update = last_entry.date + timedelta(weeks=2)
-            today = datetime.utcnow().date()
-            if today < next_update:
-                next_update = next_update.strftime('%Y-%m-%d')
-        
-        return render_template("index.html", next_update=next_update)
-    else:
-        return render_template("index.html")
+# USED TO CREATE GRAPH
+@bp.route("/weight-history-data")
+@login_required
+def weight_history_data():
+    weight_entries = (
+        WeightEntry.query.filter_by(user_id=current_user.id)
+        .order_by(WeightEntry.date.asc())
+        .all()
+    )
+    data = {
+        "dates": [entry.date.strftime("%Y-%m-%d") for entry in weight_entries],
+        "weights": [entry.weight for entry in weight_entries],
+    }
+    return jsonify(data)
 
 
-
-"""
-@bp.route("/nutrition", methods=['GET', 'POST'])
-def nutrition():
-    nutrition_data = None
-    if request.method == 'POST':
-        query = request.form.get('query')
-        if query:
-            nutrition_data = nutrition_calculator(query)
-    return render_template('nutrition.html', nutrition_data=nutrition_data)
-    
-    Initially used for testing
-"""
-
-
+# DAILY CHECK IN ROUTE
 @bp.route("/daily-checkin", methods=["GET", "POST"])
 @login_required
 def daily_checkin():
@@ -129,6 +148,7 @@ def daily_checkin():
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
 
 
+# CHECK IN HISTORY
 @bp.route("/checkin-history")
 @login_required
 def checkin_history():
@@ -136,6 +156,7 @@ def checkin_history():
     return render_template("checkin_history.html", checkins=checkins)
 
 
+# Upon registration, users must update their personal info
 @bp.route("/mandatory-update", methods=["GET", "POST"])
 @login_required
 def mandatory_update():
@@ -154,75 +175,90 @@ def mandatory_update():
         db.session.add(user_info)
 
         initial_weight_entry = WeightEntry(
-            user_id=current_user.id,
-            weight=form.current_weight.data
+            user_id=current_user.id, weight=form.current_weight.data
         )
         db.session.add(initial_weight_entry)
-        
-        workout_plan = workoutRecommendation(form.goal.data, form.height.data, form.current_weight.data)
-        #print(workout_plan)
-        
-        lines = workout_plan.split('\n')
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Nutrition Goals"]
+
+        workout_plan = workoutRecommendation(
+            form.goal.data, form.height.data, form.current_weight.data
+        )
+        # print(workout_plan)
+
+        lines = workout_plan.split("\n")
+        days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+            "Nutrition Goals",
+        ]
         workout_dict = {day: "" for day in days}
 
         current_day = None
         for line in lines:
             if any(day in line for day in days):
                 current_day = next(day for day in days if day in line)
-                workout_dict[current_day] += line.split(f"{current_day}: ")[1] if ": " in line else ""
+                workout_dict[current_day] += (
+                    line.split(f"{current_day}: ")[1] if ": " in line else ""
+                )
             elif current_day:
                 workout_dict[current_day] += f"\n{line.strip()}"
-        
+
         new_workout = Workouts(
             user_id=current_user.id,
-            monday=workout_dict.get('Monday', '').strip(),
-            tuesday=workout_dict.get('Tuesday', '').strip(),
-            wednesday=workout_dict.get('Wednesday', '').strip(),
-            thursday=workout_dict.get('Thursday', '').strip(),
-            friday=workout_dict.get('Friday', '').strip(),
-            saturday=workout_dict.get('Saturday', '').strip(),
-            sunday=workout_dict.get('Sunday', '').strip(),
-            nutrition_goals=workout_dict.get('Nutrition Goals', '').strip()
+            monday=workout_dict.get("Monday", "").strip(),
+            tuesday=workout_dict.get("Tuesday", "").strip(),
+            wednesday=workout_dict.get("Wednesday", "").strip(),
+            thursday=workout_dict.get("Thursday", "").strip(),
+            friday=workout_dict.get("Friday", "").strip(),
+            saturday=workout_dict.get("Saturday", "").strip(),
+            sunday=workout_dict.get("Sunday", "").strip(),
+            nutrition_goals=workout_dict.get("Nutrition Goals", "").strip(),
         )
         db.session.add(new_workout)
-        
+
         db.session.commit()
-        
+
         flash("Your information has been saved.")
-        flash(workout_dict, 'workout_plan')
+        flash(workout_dict, "workout_plan")
         return redirect(url_for("auth.index"))
 
-    
     return render_template("mandatory_update.html", form=form)
 
-@bp.route('/workout')
+
+# Display workouts
+@bp.route("/workout")
 @login_required
 def workout():
     workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
     return render_template("workout.html", workout_plan=workout_plan)
 
 
-
-
+# Update weight route
 @bp.route("/weight-update", methods=["GET", "POST"])
 @login_required
 def weight_update():
     form = WeightEntryForm()
-    last_entry = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).first()
+    last_entry = (
+        WeightEntry.query.filter_by(user_id=current_user.id)
+        .order_by(WeightEntry.date.desc())
+        .first()
+    )
     next_update = None
     if last_entry:
         next_update = last_entry.date + timedelta(weeks=2)
         today = datetime.utcnow().date()
         if today < next_update:
-            next_update = next_update.strftime('%Y-%m-%d')
-            return render_template("weight_update.html", form=None, next_update=next_update)
+            next_update = next_update.strftime("%Y-%m-%d")
+            return render_template(
+                "weight_update.html", form=None, next_update=next_update
+            )
 
     if form.validate_on_submit():
-        weight_entry = WeightEntry(
-            user_id=current_user.id,
-            weight=form.weight.data
-        )
+        weight_entry = WeightEntry(user_id=current_user.id, weight=form.weight.data)
         db.session.add(weight_entry)
         db.session.commit()
         flash("Your weight has been updated!")
@@ -231,25 +267,30 @@ def weight_update():
     return render_template("weight_update.html", form=form, next_update=None)
 
 
+# Check weight history route
 @bp.route("/weight-history")
 @login_required
 def weight_history():
-    weight_entries = WeightEntry.query.filter_by(user_id=current_user.id).order_by(WeightEntry.date.desc()).all()
+    weight_entries = (
+        WeightEntry.query.filter_by(user_id=current_user.id)
+        .order_by(WeightEntry.date.desc())
+        .all()
+    )
     next_update = None
     if weight_entries:
         last_entry = weight_entries[0]
         next_update = last_entry.date + timedelta(weeks=2)
         today = datetime.today().date()
         if today < next_update:
-            next_update = next_update.strftime('%Y-%m-%d')
+            next_update = next_update.strftime("%Y-%m-%d")
         else:
             next_update = None
 
-    return render_template("weight_history.html", weight_entries=weight_entries, next_update=next_update)
-
+    return render_template(
+        "weight_history.html", weight_entries=weight_entries, next_update=next_update
+    )
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
