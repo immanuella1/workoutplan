@@ -6,10 +6,10 @@
 </head>
 <body>
   <h1>Daily Check-In</h1>
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul>
-        {% for message in messages %}
+        {% for category, message in messages %}
           <li>{{ message }}</li>
         {% endfor %}
       </ul>
@@ -18,7 +18,7 @@
   {% if existing_checkin %}
     <p>You have already checked in today.</p>
   {% else %}
-    <form method="post">
+    <form method="post" id="checkin-form">
       <label for="did_workout">Did you workout today?</label>
       <input type="checkbox" name="did_workout" id="did_workout">
       
@@ -37,24 +37,34 @@
       let newPoints = currentPoints + 50;
 
       let message = '';
-      if (newPoints = 2000) {
+      if (newPoints === 2000) {
         message = "You have reached 2000 points now, Congratulations, you are an Expert now!";
-      } else if (newPoints = 1800) {
+      } else if (newPoints === 1800) {
         message = "You have reached 1800 points now, Congratulations, you are a Pro now!";
-      } else if (newPoints = 1200) {
+      } else if (newPoints === 1200) {
         message = "You have reached 1200 points now, Congratulations, you are Intermediate now!";
-      } else if (newPoints = 200) {
+      } else if (newPoints === 600) {
+        message = "You have reached 600 points now, Congratulations, you are a Novice now!";
+      } else if (newPoints === 200) {
         message = "You have reached 200 points now, Congratulations, you are a Novice now!";
-      } else {
-        message = "You have gained 50 points!";
-      }
+      } else: 
+      {message = "You have gained 50 points!";}
+    
 
    
       alert(message);
+        
+      let okButton = document.createElement('button');
+      okButton.textContent = 'OK';
+      okButton.addEventListener('click', function() {
+        this.parentNode.removeChild(this); 
+        return false; 
+      });
+      document.body.appendChild(okButton);
 
       this.submit();
     });
   </script>
-
+  <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
 </body>
 </html>

@@ -16,6 +16,7 @@
         <p><a href="{{ url_for('auth.weight_update') }}">Update Weight</a></p>
       {% endif %}
       <p><a href="{{ url_for('auth.weight_history') }}">Weight History</a></p>
+      <p><a href="{{ url_for('auth.update_info') }}">Update Your Information</a></p>
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
