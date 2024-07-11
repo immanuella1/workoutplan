@@ -4,11 +4,14 @@
   <meta charset="utf-8">
   <title>Update User Info</title>
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Update Your Information</h1>
-  
+  </div>
   <form method="post">
-    {{ form.hidden_tag() }}
+    
+      {{ form.hidden_tag() }}
     
     <label for="goal">Goal:</label>
     {{ form.goal(size=32) }}<br>
@@ -17,8 +20,15 @@
     {{ form.time_frame(size=32) }}<br>
     
     <button type="submit">Update</button>
+  </div>
   </form>
 
   <a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+  <script>
+    document.getElementById('update-form').addEventListener('submit', function(event) {
+      
+      window.location.href = "{{ url_for('auth.index') }}";
+    });
+  </script>
 </body>
 </html>

@@ -9,6 +9,7 @@
   <div class="center_main">
   <div class="heading_style">
   <h1>Daily Check-In</h1>
+<!-- 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul>
@@ -18,25 +19,22 @@
       </ul>
     {% endif %}
   {% endwith %}
-  {% if existing_checkin %}
+   -->
+  {% if existing_checkin and existing_checkin.did_workout %}
   <div class="text_size">
-    <p>You have already checked in today.</p>
+    <p>You have already marked your workout today. Check back tomorrow!</p>
   </div>
-  {% else %}
+  {% endif %}
     <form method="post" id="checkin-form">
-      <label for="did_workout">Did you workout today?</label>
-      <input type="checkbox" name="did_workout" id="did_workout"><br>
-      </div>
-      </div>
-      <div class="text_size">
+      {% if not existing_checkin or not existing_checkin.did_workout %}
+        <label for="did_workout">Did you workout today?</label>
+        <input type="checkbox" name="did_workout" id="did_workout"><br>
+      {% endif %}
       <label for="food_log">Food log (enter what you ate):</label>
       <textarea name="food_log" id="food_log" required></textarea>
-      </div>
-    <div class="text_size">
       <button type="submit">Submit</button>
-    </div>
     </form>
-  {% endif %}
+  </div>
   </div>
   <script>
     document.getElementById('checkin-form').addEventListener('submit', function(event) {

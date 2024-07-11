@@ -6,7 +6,6 @@ load_dotenv()
 
 my_api_key = os.getenv("OPENAI_KEY")
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
 client = openai
 
