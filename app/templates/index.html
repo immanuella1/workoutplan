@@ -1,21 +1,22 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Hello, Workout!</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-
-  </head>
-  <body class="main_page">
-    <div class="center_main" >
+<head>
+  <meta charset="utf-8">
+  <title>Hello, Workout!</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body class="main_page">
+  <div class="center_main">
     <div class="heading_style">
-    <h1>Welcome to <br> Hello Workout!</h1>
+      <h1>Welcome to <br> Hello Workout!</h1>
     </div>
-   
+
     {% if current_user.is_authenticated %}
     <div class="text_size">
-    <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
-    <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
+      <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
+      <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
       {% if next_update %}
         <p>Next weight update is due on {{ next_update }}.</p>
@@ -23,37 +24,69 @@
         <p><a href="{{ url_for('auth.weight_update') }}">Update Weight</a></p>
       {% endif %}
       <p><a href="{{ url_for('auth.weight_history') }}">Weight History</a></p>
+      <p><a href="{{ url_for('auth.update_info') }}">Update Your Information</a></p>
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
-    </div>
-    <div id="dailyReminder" class="daily_style">
-      <p>Don't forget to check in today!</p>
     </div>
     {% else %}
     <div class="logreg_size">
       <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
     </div>
     <div class="about">
-    <p>about section</p>
+      <p>about section</p>
     </div>
     <div class="features">
-    <p>features section</p>
+      <p>features section</p>
     </div>
-      {% endif %}
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-      const dailyReminder = document.getElementById('dailyReminder');
-  
-      // Check if the daily reminder message should be displayed
-      const shouldDisplayReminder = '{{ should_display_reminder }}' === 'True';
-  
-      if (shouldDisplayReminder) {
-      // Display the daily reminder message
-      dailyReminder.style.display = 'block';
-      }
-    });
+    <div id="dailyReminder" class="daily_style">
+      <p>Don't forget to check in today!</p>
+    </div>
+    <h2>Your Weight History Graph</h2>
+    <canvas id="weightHistoryChart" width="400" height="200"></canvas>
 
+    <script>
+      fetch('{{ url_for("auth.weight_history_data") }}')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Fetched data:', data); // Debug log
+          const ctx = document.getElementById('weightHistoryChart').getContext('2d');
+          const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: data.dates,
+              datasets: [{
+                label: 'Weight (lbs)',
+                data: data.weights,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                x: {
+                  type: 'time',
+                  time: {
+                    unit: 'day'
+                  },
+                  title: {
+                    display: true,
+                    text: 'Date'
+                  }
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Weight (lbs)'
+                  }
+                }
+              }
+            }
+          });
+        })
+        .catch(error => console.error('Error fetching weight history data:', error));
     </script>
+      {% endif %}
   </body>
 </html>

@@ -38,10 +38,17 @@ class User(UserMixin, db.Model):
             return "Pro"
         elif self.points >= 1200:
             return "Intermediate"
-        elif self.points >= 200:
+        elif self.points >= 600:
             return "Novice"
-        else:
+        elif self.points == 200:
             return "Beginner"
+        
+    
+    def calculate_level(self):
+        user_points = self.points
+        points_system = {2000: "Expert", 1800: "Pro", 1200: "Intermediate", 600: "Novice", 200: "Beginner"}
+        level = [level for points, level in points_system.items() if user_points >= points][0]
+        return level
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -70,7 +77,8 @@ class DailyCheckIn(db.Model):
     total_sodium = db.Column(db.Float, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User", backref=db.backref("daily_checkins", lazy=True))
-
+    points_earned = db.Column(db.Integer, default=0, nullable=False)
+    
     __table_args__ = (
         db.UniqueConstraint("user_id", "date", name="unique_user_date_checkin"),
     )
