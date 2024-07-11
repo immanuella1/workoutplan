@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, get_flashed_messages
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
 from app.models import User, DailyCheckIn, UserInfo, WeightEntry, Workouts
@@ -160,8 +160,8 @@ def mandatory_update():
         db.session.add(initial_weight_entry)
         
         workout_plan = workoutRecommendation(form.goal.data, form.height.data, form.current_weight.data)
-        print(workout_plan)
-
+        #print(workout_plan)
+        
         lines = workout_plan.split('\n')
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Nutrition Goals"]
         workout_dict = {day: "" for day in days}
@@ -188,10 +188,20 @@ def mandatory_update():
         db.session.add(new_workout)
         
         db.session.commit()
+        
         flash("Your information has been saved.")
+        flash(workout_dict, 'workout_plan')
         return redirect(url_for("auth.index"))
 
+    
     return render_template("mandatory_update.html", form=form)
+
+@bp.route('/workout')
+@login_required
+def workout():
+    workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
+    return render_template("workout.html", workout_plan=workout_plan)
+
 
 
 

@@ -100,7 +100,7 @@ class Workouts(db.Model):
     saturday = db.Column(db.String(500), nullable=False)
     sunday = db.Column(db.String(500), nullable=False)
     nutrition_goals = db.Column(db.String(500), nullable=False)
-    
+
     user = db.relationship("User", backref=db.backref("workouts", lazy=True))
     
     def __repr__(self):
