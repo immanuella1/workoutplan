@@ -6,7 +6,6 @@ load_dotenv()
 
 my_api_key = os.getenv("OPENAI_KEY")
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
 client = openai
 
@@ -19,6 +18,8 @@ def workoutRecommendation(goal, height, current_weight):
         ]
     )  
     return completion.choices[0].message.content
+
+info = "User's height, weight, goal and time frame"
 
 def nutritionRecomendation(info):
     completion = client.chat.completions.create(
