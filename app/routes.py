@@ -179,59 +179,54 @@ def logout():
 @login_required
 def daily_checkin():
     today = date.today()
-    existing_checkin = DailyCheckIn.query.filter_by(
-        user_id=current_user.id, date=today
-    ).first()
+    existing_checkin = DailyCheckIn.query.filter_by(user_id=current_user.id, date=today).first()
 
     if request.method == "POST":
-        if existing_checkin:
-            flash("You have already checked in today.")
-        
-        else:
-            did_workout = request.form.get("did_workout") == "on"
-            food_log = request.form.get("food_log")
+        did_workout = request.form.get("did_workout") == "on"
+        food_log = request.form.get("food_log")
+        nutrition_data = nutrition_calculator(food_log)
 
-            nutrition_data = nutrition_calculator(food_log)
+        try:
+            if existing_checkin:
+                existing_checkin.total_calories += nutrition_data.get("total_calories", 0)
+                existing_checkin.total_protein += nutrition_data.get("total_protein", 0)
+                existing_checkin.total_sugars += nutrition_data.get("total_sugars", 0)
+                existing_checkin.total_sodium += nutrition_data.get("total_sodium", 0)
 
-            try:
-                '''if existing_checkin:
-                    if not existing_checkin.did_workout and did_workout:
-                        existing_checkin.did_workout = True
-                        flash("You have marked your workout.")
+                if not existing_checkin.did_workout and did_workout:
+                    existing_checkin.did_workout = True
+                    existing_checkin.points_earned += 50
+                    current_user.add_points(50)
+                    flash("You have marked your workout and earned 50 points.")
 
-                    existing_checkin.total_calories += nutrition_data.get("total_calories", 0)
-                    existing_checkin.total_protein += nutrition_data.get("total_protein", 0)
-                    existing_checkin.total_sugars += nutrition_data.get("total_sugars", 0)
-                    existing_checkin.total_sodium += nutrition_data.get("total_sodium", 0)
-                    flash("Your food log has been updated.")
-                else:'''
+                flash("Your food log has been updated.")
+            else:
                 checkin = DailyCheckIn(
                     user_id=current_user.id,
                     did_workout=did_workout,
-
-                    total_calories=nutrition_data.get("total_calories"),
-                    total_protein=nutrition_data.get("total_protein"),
-                    total_sugars=nutrition_data.get("total_sugars"),
-                    total_sodium=nutrition_data.get("total_sodium"),
-    
+                    total_calories=nutrition_data.get("total_calories", 0),
+                    total_protein=nutrition_data.get("total_protein", 0),
+                    total_sugars=nutrition_data.get("total_sugars", 0),
+                    total_sodium=nutrition_data.get("total_sodium", 0),
+                    points_earned=50 if did_workout else 0
                 )
-                user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
-                if user_info:
-                    user_info.add_points(50)
+
+                if did_workout:
+                    current_user.add_points(50)
+                    flash("Check-in successful! You earned 50 points.")
                 else:
-                    flash("User info not found. Please update your information.")
-                    return redirect(url_for("auth.mandatory_update"))
+                    flash("Check-in successful!")
 
                 db.session.add(checkin)
-                flash("Check-in successful! You earned 50 points")
 
-                db.session.commit()
-                return redirect(url_for("auth.daily_checkin"))
-            except Exception as e:
-                db.session.rollback()
-                flash(f"An error occurred: {e}")
+            db.session.commit()
+            return redirect(url_for("auth.daily_checkin"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}")
 
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
+
 
 # Route to check in with daily work out
 @bp.route("/checkin-history")
