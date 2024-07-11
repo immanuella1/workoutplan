@@ -185,7 +185,7 @@ def mandatory_update():
         workout_plan = workoutRecommendation(
             form.goal.data, form.height.data, form.current_weight.data
         )
-        # print(workout_plan)
+        print(workout_plan)
 
         lines = workout_plan.split("\n")
         days = [
