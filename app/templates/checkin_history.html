@@ -3,9 +3,14 @@
 <head>
   <meta charset="utf-8">
   <title>Check-In History</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Check-In History</h1>
+  </div>
+  <div class="text_size">
   <ul>
     {% for checkin in checkins %}
       <li>

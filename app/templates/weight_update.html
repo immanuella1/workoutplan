@@ -3,20 +3,27 @@
 <head>
   <meta charset="utf-8">
   <title>Update Weight</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="main_page">  
+  <div class="center_main">
+  <div class="heading_style">
   <h1>Update Weight</h1>
+  </div>
   {% if next_update %}
     <p>Next weight update is due on {{ next_update }}.</p>
   {% else %}
     <form method="post">
       {{ form.hidden_tag() }}
+      <div class="fields_lables">
       <p>
         {{ form.weight.label }}<br>
-        {{ form.weight(size=32) }}
+        {{ form.weight(class_='custom-input') }}
       </p>
-      <p>{{ form.submit() }}</p>
+      </div>
+      <p>{{ form.submit(class_='register') }}</p>
     </form>
   {% endif %}
+  </div>
 </body>
 </html>

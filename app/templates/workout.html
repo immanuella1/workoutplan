@@ -3,14 +3,22 @@
   <head>
     <meta charset="utf-8">
     <title>Your Workout Plan</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   </head>
-  <body>
+  <body class="main_page">  
+    <div class="center_main">
+    <div class="heading_style">
     <h1>Your Workout Plan</h1>
-    
+    </div>
     {% if current_user.is_authenticated %}
+    <div class="fields_lables">
       <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
+      </div>
       {% if workout_plan %}
+      <div class="heading_style">
         <h2>Workout Plan Details</h2>
+      </div>
+      <div class="text_size">
         <ul>
           <li>Monday: {{ workout_plan.monday }}</li>
           <li>Tuesday: {{ workout_plan.tuesday }}</li>
@@ -21,11 +29,17 @@
           <li>Sunday: {{ workout_plan.sunday }}</li>
           <li>Nutrition Goals: {{ workout_plan.nutrition_goals }}</li>
         </ul>
+      </div>
       {% else %}
+      <div class="text_size">
         <p>No workout plan available. Please update your information first.</p>
+      </div>
       {% endif %}
     {% else %}
+    <div class="logreg_size">
       <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p> 
+    </div>
     {% endif %}
+    </div>
   </body>
 </html>

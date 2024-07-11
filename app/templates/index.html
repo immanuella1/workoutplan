@@ -3,12 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>Hello, Workout!</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
   </head>
-  <body>
-    <h1>Hello, Workout!</h1>
+  <body class="main_page">
+    <div class="center_main" >
+    <div class="heading_style">
+    <h1>Welcome to <br> Hello Workout!</h1>
+    </div>
+   
     {% if current_user.is_authenticated %}
-      <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>
-      <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
+    <div class="text_size">
+    <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
+    <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
       {% if next_update %}
         <p>Next weight update is due on {{ next_update }}.</p>
@@ -20,10 +27,17 @@
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
-
+    </div>
     {% else %}
-      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p> 
-    {% endif %}  
-
+    <div class="logreg_size">
+      <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
+    </div>
+    <div class="about">
+    <p>about section</p>
+    </div>
+    <div class="features">
+    <p>features section</p>
+    </div>
+      {% endif %}
   </body>
 </html>

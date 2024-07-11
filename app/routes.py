@@ -241,7 +241,7 @@ def weight_history():
     if weight_entries:
         last_entry = weight_entries[0]
         next_update = last_entry.date + timedelta(weeks=2)
-        today = datetime.today.date()
+        today = datetime.today().date()
         if today < next_update:
             next_update = next_update.strftime('%Y-%m-%d')
         else:

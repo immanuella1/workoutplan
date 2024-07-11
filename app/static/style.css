@@ -1,0 +1,85 @@
+body{
+   font-size: 10px;
+}
+
+.main_page{
+   background-color: beige;
+}
+
+.logreg_size{
+   font-size: 3em;
+   word-spacing: 4em;
+}
+
+.center_main{
+   text-align: center;
+   padding-top: 6%;
+}
+
+.heading_style{
+   font-style: normal ;
+   font-family: 'Courier New','Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+   font-size: 4em;
+   text-transform: uppercase;
+}
+.smaller_heading_style{
+   font-size: 2rem;
+}
+
+.about{
+   padding: 1em;
+   border: solid;
+   font-size: 2em;
+   border-radius: 40%;
+   float:left;
+   text-align: left;
+   margin-left: 10em;
+}
+ 
+.features{
+   padding: 1em;
+   border: solid;
+   font-size: 2em;
+   border-radius: 40%;
+   float: right;
+   text-align: right;
+   margin-right: 10em;
+}
+.custom-input{
+   width: 25em; /* Adjust width as needed */
+   height: 1.5em; /* Adjust height as needed */
+   /* Additional styling if required */
+}
+
+.fields_lables{
+   font-size: 2.5em;
+}
+
+.fields_lables2{
+   font-size: 2em;
+}
+
+.remind{ /* remember me */
+   font-size: 2em;
+}
+
+.submit{
+   font-size: 1em; 
+}
+
+.register{
+   font-size: .9rem; 
+}
+
+.text_size{
+   font-size: 1.5rem;
+   margin-top: 3rem;
+}
+
+.margins{
+   margin-top: 3rem;
+}
+
+.custom-checkbox { /* checkbox size */
+   transform: scale(1.3);
+}
