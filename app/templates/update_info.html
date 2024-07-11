@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Update User Info</title>
+  
+</head>
+<body>
+  <h1>Update Your Information</h1>
+  
+  <form method="post">
+    {{ form.hidden_tag() }}
+    
+    <label for="goal">Goal:</label>
+    {{ form.goal(size=32) }}<br>
+    
+    <label for="time_frame">Time Frame (in weeks):</label>
+    {{ form.time_frame(size=32) }}<br>
+    
+    <button type="submit">Update</button>
+  </form>
+
+  <a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+</body>
+</html>
