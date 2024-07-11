@@ -7,6 +7,7 @@
   <body>
     <h1>Hello, Workout!</h1>
     {% if current_user.is_authenticated %}
+      <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>
       <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
       {% if next_update %}
@@ -18,8 +19,10 @@
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
+
     {% else %}
-      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p>
-    {% endif %}
+      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p> 
+    {% endif %}  
+
   </body>
 </html>

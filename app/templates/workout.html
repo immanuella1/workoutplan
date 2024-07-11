@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Your Workout Plan</title>
+  </head>
+  <body>
+    <h1>Your Workout Plan</h1>
+    
+    {% if current_user.is_authenticated %}
+      <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
+      {% if workout_plan %}
+        <h2>Workout Plan Details</h2>
+        <ul>
+          <li>Monday: {{ workout_plan.monday }}</li>
+          <li>Tuesday: {{ workout_plan.tuesday }}</li>
+          <li>Wednesday: {{ workout_plan.wednesday }}</li>
+          <li>Thursday: {{ workout_plan.thursday }}</li>
+          <li>Friday: {{ workout_plan.friday }}</li>
+          <li>Saturday: {{ workout_plan.saturday }}</li>
+          <li>Sunday: {{ workout_plan.sunday }}</li>
+          <li>Nutrition Goals: {{ workout_plan.nutrition_goals }}</li>
+        </ul>
+      {% else %}
+        <p>No workout plan available. Please update your information first.</p>
+      {% endif %}
+    {% else %}
+      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p> 
+    {% endif %}
+  </body>
+</html>
