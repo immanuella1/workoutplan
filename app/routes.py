@@ -19,19 +19,10 @@ from app.forms.forms import (
     UpdateUserInfoForm,
 )
 from app.apis.nutrition_api import nutrition_calculator
-<<<<<<< HEAD
 from app.apis.openapi_api import *
-from datetime import date
 import openai
 import os
-=======
 from datetime import date, datetime, timedelta
-<<<<<<< HEAD
->>>>>>> main
-
-bp = Blueprint("auth", __name__)
-
-=======
 from app.apis.openapi_api import workoutRecommendation
 
 bp = Blueprint("auth", __name__)
@@ -108,7 +99,7 @@ def index():
 
 
 # REGISTRATION ROUTE
->>>>>>> main
+
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
@@ -189,6 +180,7 @@ def daily_checkin():
     if request.method == "POST":
         if existing_checkin:
             flash("You have already checked in today.")
+        
         else:
             did_workout = request.form.get("did_workout") == "on"
             food_log = request.form.get("food_log")
@@ -196,9 +188,21 @@ def daily_checkin():
             nutrition_data = nutrition_calculator(food_log)
 
             try:
+                '''if existing_checkin:
+                    if not existing_checkin.did_workout and did_workout:
+                        existing_checkin.did_workout = True
+                        flash("You have marked your workout.")
+
+                    existing_checkin.total_calories += nutrition_data.get("total_calories", 0)
+                    existing_checkin.total_protein += nutrition_data.get("total_protein", 0)
+                    existing_checkin.total_sugars += nutrition_data.get("total_sugars", 0)
+                    existing_checkin.total_sodium += nutrition_data.get("total_sodium", 0)
+                    flash("Your food log has been updated.")
+                else:'''
                 checkin = DailyCheckIn(
                     user_id=current_user.id,
                     did_workout=did_workout,
+
                     total_calories=nutrition_data.get("total_calories"),
                     total_protein=nutrition_data.get("total_protein"),
                     total_sugars=nutrition_data.get("total_sugars"),
@@ -211,15 +215,18 @@ def daily_checkin():
                 else:
                     flash("User info not found. Please update your information.")
                     return redirect(url_for("auth.mandatory_update"))
+
                 db.session.add(checkin)
-                db.session.commit()
                 flash("Check-in successful! You earned 50 points")
-                return redirect(url_for("auth.checkin_history"))
+
+                db.session.commit()
+                return redirect(url_for("auth.daily_checkin"))
             except Exception as e:
                 db.session.rollback()
                 flash(f"An error occurred: {e}")
 
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
+
 
 
 # CHECK IN HISTORY
@@ -254,15 +261,6 @@ def mandatory_update():
         )
         db.session.add(initial_weight_entry)
 
-<<<<<<< HEAD
-        db.session.commit()
-        
-        workout_plan = workoutRecomendation(form.goal.data)
-        
-        return render_template("register.html", form=form, workout_plan=workout_plan)
-    
-    #return redirect(url_for("auth.index"))
-=======
         workout_dict = generate_workout_plan(
             form.goal.data, form.height.data, form.current_weight.data
         )
@@ -271,7 +269,13 @@ def mandatory_update():
         flash("Your information has been saved.")
         flash(workout_dict, "workout_plan")
         return redirect(url_for("auth.index"))
->>>>>>> main
+        #db.session.commit()
+        
+        #workout_plan = workoutRecomendation(form.goal.data)
+        
+    #return render_template("register.html", form=form, workout_plan=workout_plan)
+    
+    #return redirect(url_for("auth.index"))
 
     return render_template("mandatory_update.html", form=form)
 '''@bp.route("/")

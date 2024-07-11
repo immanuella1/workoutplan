@@ -7,37 +7,39 @@
 </head>
 <body class="main_page">  
   <div class="center_main">
-  <div class="heading_style">
-  <h1>Daily Check-In</h1>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul>
-        {% for category, message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  {% if existing_checkin %}
-  <div class="text_size">
-    <p>You have already checked in today.</p>
-  </div>
-  {% else %}
-    <form method="post" id="checkin-form">
-      <label for="did_workout">Did you workout today?</label>
-      <input type="checkbox" name="did_workout" id="did_workout"><br>
-      </div>
-      </div>
+    <div class="heading_style">
+      <h1>Daily Check-In</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul>
+            {% for category, message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      {% if existing_checkin%}
       <div class="text_size">
-      <label for="food_log">Food log (enter what you ate):</label>
-      <textarea name="food_log" id="food_log" required></textarea>
+        <p>You have already checked in today.</p>
       </div>
-    <div class="text_size">
-      <button type="submit">Submit</button>
+      {% else %}
+      <form method="post" id="checkin-form">
+        <label for="did_workout">Did you workout today?</label>
+        <input type="checkbox" name="did_workout" id="did_workout"><br>
+        </div>
+        </div>
+        <div class="text_size">
+        <label for="food_log">Food log (enter what you ate):</label>
+        <textarea name="food_log" id="food_log" required></textarea>
+        </div>
+      <div class="text_size">
+        <button type="submit">Submit</button>
+      </div>
+      </form>
+    {% endif %}
     </div>
-    </form>
-  {% endif %}
-  </div>
   <script>
     document.getElementById('checkin-form').addEventListener('submit', function(event) {
       event.preventDefault(); 
