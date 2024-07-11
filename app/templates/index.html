@@ -29,19 +29,7 @@
         <button type="submit">Logout</button>
       </form>
     </div>
-    {% else %}
-    <div class="logreg_size">
-      <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
-    </div>
-    <div class="about">
-      <p>about section</p>
-    </div>
-    <div class="features">
-      <p>features section</p>
-    </div>
-    <div id="dailyReminder" class="daily_style">
-      <p>Don't forget to check in today!</p>
-    </div>
+
     <h2>Your Weight History Graph</h2>
     <canvas id="weightHistoryChart" width="400" height="200"></canvas>
 
@@ -87,6 +75,18 @@
         })
         .catch(error => console.error('Error fetching weight history data:', error));
     </script>
-      {% endif %}
-  </body>
+
+    {% else %}
+    <div class="logreg_size">
+      <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
+    </div>
+    <div class="about">
+      <p>about section</p>
+    </div>
+    <div class="features">
+      <p>features section</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
 </html>
