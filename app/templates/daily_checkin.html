@@ -7,72 +7,35 @@
 </head>
 <body class="main_page">  
   <div class="center_main">
-  <div class="heading_style">
-  <h1>Daily Check-In</h1>
-<!-- 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul>
-        {% for category, message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-   -->
-  {% if existing_checkin and existing_checkin.did_workout %}
-  <div class="text_size">
-    <p>You have already marked your workout today. Check back tomorrow!</p>
-  </div>
-  {% endif %}
-    <form method="post" id="checkin-form">
-      {% if not existing_checkin or not existing_checkin.did_workout %}
-        <label for="did_workout">Did you workout today?</label>
-        <input type="checkbox" name="did_workout" id="did_workout"><br>
+    <div class="heading_style">
+      <h1>Daily Check-In</h1>
+<!--
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul>
+            {% for category, message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+-->
+      {% if existing_checkin and existing_checkin.did_workout %}
+      <div class="text_size">
+        <p>You have already marked your workout today. Check back tomorrow!</p>
+      </div>
       {% endif %}
-      <label for="food_log">Food log (enter what you ate):</label>
-      <textarea name="food_log" id="food_log" required></textarea>
-      <button type="submit">Submit</button>
-    </form>
+      <form method="post" id="checkin-form">
+        {% if not existing_checkin or not existing_checkin.did_workout %}
+          <label for="did_workout">Did you workout today?</label>
+          <input type="checkbox" name="did_workout" id="did_workout"><br>
+        {% endif %}
+        <label for="food_log">Food log (enter what you ate):</label>
+        <textarea name="food_log" id="food_log" required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </div>
-  </div>
-  <script>
-    document.getElementById('checkin-form').addEventListener('submit', function(event) {
-      event.preventDefault(); 
-
-    
-      let currentPoints = 150; 
-      let newPoints = currentPoints + 50;
-
-      let message = '';
-      if (newPoints === 2000) {
-        message = "You have reached 2000 points now, Congratulations, you are an Expert now!";
-      } else if (newPoints === 1800) {
-        message = "You have reached 1800 points now, Congratulations, you are a Pro now!";
-      } else if (newPoints === 1200) {
-        message = "You have reached 1200 points now, Congratulations, you are Intermediate now!";
-      } else if (newPoints === 600) {
-        message = "You have reached 600 points now, Congratulations, you are a Novice now!";
-      } else if (newPoints === 200) {
-        message = "You have reached 200 points now, Congratulations, you are a Novice now!";
-      } else{
-        message = "You have gained 50 points!";}
-    
-
-   
-      alert(message);
-        
-      let okButton = document.createElement('button');
-      okButton.textContent = 'OK';
-      okButton.addEventListener('click', function() {
-        this.parentNode.removeChild(this); 
-        return false; 
-      });
-      document.body.appendChild(okButton);
-
-      this.submit();
-    });
-  </script>
   <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
 </body>
 </html>

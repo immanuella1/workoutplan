@@ -169,7 +169,9 @@ def weight_history_data():
 @login_required
 def daily_checkin():
     today = date.today()
-    existing_checkin = DailyCheckIn.query.filter_by(user_id=current_user.id, date=today).first()
+    existing_checkin = DailyCheckIn.query.filter_by(
+        user_id=current_user.id, date=today
+    ).first()
 
     if request.method == "POST":
         did_workout = request.form.get("did_workout") == "on"
@@ -177,34 +179,37 @@ def daily_checkin():
 
         nutrition_data = nutrition_calculator(food_log)
 
+        try:
             if existing_checkin:
-            if not existing_checkin.did_workout and did_workout:
-                existing_checkin.did_workout = True
+                if not existing_checkin.did_workout and did_workout:
+                    existing_checkin.did_workout = True
+                    flash("You have marked your workout.")
 
-            existing_checkin.total_calories += nutrition_data.get("total_calories", 0)
-            existing_checkin.total_protein += nutrition_data.get("total_protein", 0)
-            existing_checkin.total_sugars += nutrition_data.get("total_sugars", 0)
-            existing_checkin.total_sodium += nutrition_data.get("total_sodium", 0)
-            flash("Your food log has been updated.")
-        else:
-            checkin = DailyCheckIn(
-                user_id=current_user.id,
-                did_workout=did_workout,
-                total_calories=nutrition_data.get("total_calories", 0),
-                total_protein=nutrition_data.get("total_protein", 0),
-                total_sugars=nutrition_data.get("total_sugars", 0),
-                total_sodium=nutrition_data.get("total_sodium", 0)
-            )
+                existing_checkin.total_calories += nutrition_data.get("total_calories", 0)
+                existing_checkin.total_protein += nutrition_data.get("total_protein", 0)
+                existing_checkin.total_sugars += nutrition_data.get("total_sugars", 0)
+                existing_checkin.total_sodium += nutrition_data.get("total_sodium", 0)
+                flash("Your food log has been updated.")
+            else:
+                checkin = DailyCheckIn(
+                    user_id=current_user.id,
+                    did_workout=did_workout,
+                    total_calories=nutrition_data.get("total_calories", 0),
+                    total_protein=nutrition_data.get("total_protein", 0),
+                    total_sugars=nutrition_data.get("total_sugars", 0),
+                    total_sodium=nutrition_data.get("total_sodium", 0)
+                )
 
-            flash("Check-in successful!")
+                db.session.add(checkin)
+                flash("Check-in successful!")
 
-            db.session.add(checkin)
-
-        db.session.commit()
-        return redirect(url_for("auth.daily_checkin"))
+            db.session.commit()
+            return redirect(url_for("auth.daily_checkin"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}")
 
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
-
 
 
 
@@ -242,45 +247,7 @@ def mandatory_update():
         workout_dict = generate_workout_plan(
             form.goal.data, form.height.data, form.current_weight.data
         )
-        # print(workout_plan)
-
-        lines = workout_plan.split("\n")
-        days = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-            "Nutrition Goals",
-        ]
-        workout_dict = {day: "" for day in days}
-
-        current_day = None
-        for line in lines:
-            if any(day in line for day in days):
-                current_day = next(day for day in days if day in line)
-                workout_dict[current_day] += (
-                    line.split(f"{current_day}: ")[1] if ": " in line else ""
-                )
-            elif current_day:
-                workout_dict[current_day] += f"\n{line.strip()}"
-
-        new_workout = Workouts(
-            user_id=current_user.id,
-            monday=workout_dict.get("Monday", "").strip(),
-            tuesday=workout_dict.get("Tuesday", "").strip(),
-            wednesday=workout_dict.get("Wednesday", "").strip(),
-            thursday=workout_dict.get("Thursday", "").strip(),
-            friday=workout_dict.get("Friday", "").strip(),
-            saturday=workout_dict.get("Saturday", "").strip(),
-            sunday=workout_dict.get("Sunday", "").strip(),
-            nutrition_goals=workout_dict.get("Nutrition Goals", "").strip(),
-        )
-        db.session.add(new_workout)
-
-        db.session.commit()
+        save_workout_plan(current_user.id, workout_dict)
 
         flash("Your information has been saved.")
         flash(workout_dict, "workout_plan")
