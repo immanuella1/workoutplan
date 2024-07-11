@@ -13,6 +13,7 @@
     </div>
    
     {% if current_user.is_authenticated %}
+    <div class="text_size">
     <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
     <p><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a></p>
       <p><a href="{{ url_for('auth.checkin_history') }}">Check-In History</a></p>
@@ -25,8 +26,17 @@
       <form method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
+    </div>
     {% else %}
-      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p>
-    {% endif %}
+    <div class="logreg_size">
+      <p><a href="{{ url_for('auth.login') }}">Login</a><a href="{{ url_for('auth.register') }}">Register</a></p>
+    </div>
+    <div class="about">
+    <p>about section</p>
+    </div>
+    <div class="features">
+    <p>features section</p>
+    </div>
+      {% endif %}
   </body>
 </html>
