@@ -197,6 +197,7 @@ def logout():
     return redirect(url_for("auth.index"))
 
 # DAILY CHECK-IN ROUTE
+# app/routes.py
 @bp.route("/daily-checkin", methods=["GET", "POST"])
 @login_required
 def daily_checkin():
@@ -232,6 +233,8 @@ def daily_checkin():
                     total_sugars=nutrition_data.get("total_sugars", 0),
                     total_sodium=nutrition_data.get("total_sodium", 0)
                 )
+                
+                print(checkin)
 
                 if did_workout:
                     user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
@@ -248,8 +251,10 @@ def daily_checkin():
         except Exception as e:
             db.session.rollback()
             flash(f"An error occurred: {e}")
+            print(f"Error: {e}") 
 
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
+
 
 # CHECK-IN HISTORY ROUTE
 @bp.route("/checkin-history", methods=["GET", "POST"])
