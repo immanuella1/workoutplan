@@ -4,59 +4,105 @@
   <meta charset="utf-8">
   <title>Hello, Workout!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body class="main_page">
-  <!--<div class="center_main">-->
-    
-
-    {% if current_user.is_authenticated %}
-    <div class="text_size">
-      <div class="nav_style">
-        
-      <div class="center_main_2">
-      
-      <p class="inline" ><a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-      <p class="inline" ><a href="{{ url_for('auth.checkin_history') }}">Check-In History&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-  
-      <p class="inline"><a href="{{ url_for('auth.weight_history') }}">Weight History&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-      <p class="inline"><a href="{{ url_for('auth.update_info') }}">Update Your Information&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-     
-   
-      {% if not next_update %}
-      <p class="inline" ><a href="{{ url_for('auth.weight_update') }}">Update Weight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-    
-    </div>
+  <div class="navbar">
+    <a href="{{ url_for('auth.index') }}">Home</a>
+    <a href="{{ url_for('auth.daily_checkin') }}">Daily Check-In</a>
+    <a href="{{ url_for('auth.checkin_history') }}">Check-In History</a>
+    <a href="{{ url_for('auth.weight_history') }}">Weight History</a>
+    <a href="{{ url_for('auth.update_info') }}">Update Your Information</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
   </div>
-      {% else %}
-      
-      <p>Next weight update is due on {{ next_update }}.</p>
-      
-      {% endif %}
-      <div class="center_main">
-      <p><a href="{{ url_for('auth.workout') }}">View Workout Plan</a></p>  
-      <form class="register" method="POST" action="{{ url_for('auth.logout') }}">
-        <button type="submit">Logout</button>
-      </form>
-    </div>
-    
-    {% else %}
+
+  <div class="center_main">
     <div class="heading_style">
-      <h1>Welcome to <br> Hello Workout!</h1>
+      <h1>Your Workout Plan</h1>
     </div>
+    {% if current_user.is_authenticated %}
+    {% if workout_plan %}
+    <div class="heading_style">
+      <h2>Nutrition Goals</h2>
+    </div>
+    <div class="text_size">
+      <p>{{ workout_plan.nutrition_goals|safe }}</p>
+    </div>
+    <div class="heading_style">
+      <h2>Workout Plan Details</h2>
+    </div>
+    <div class="button-container">
+      <button class="prev-btn">Prev</button>
+      <button class="next-btn">Next</button>
+    </div>
+    <div class="workout-container">
+      <div class="day active" data-day="0">
+        <h3>Monday</h3>
+        <p>{{ workout_plan.monday|safe }}</p>
+      </div>
+      <div class="day" data-day="1">
+        <h3>Tuesday</h3>
+        <p>{{ workout_plan.tuesday|safe }}</p>
+      </div>
+      <div class="day" data-day="2">
+        <h3>Wednesday</h3>
+        <p>{{ workout_plan.wednesday|safe }}</p>
+      </div>
+      <div class="day" data-day="3">
+        <h3>Thursday</h3>
+        <p>{{ workout_plan.thursday|safe }}</p>
+      </div>
+      <div class="day" data-day="4">
+        <h3>Friday</h3>
+        <p>{{ workout_plan.friday|safe }}</p>
+      </div>
+      <div class="day" data-day="5">
+        <h3>Saturday</h3>
+        <p>{{ workout_plan.saturday|safe }}</p>
+      </div>
+      <div class="day" data-day="6">
+        <h3>Sunday</h3>
+        <p>{{ workout_plan.sunday|safe }}</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="text_size">
+      <p>No workout plan available. Please update your information first.</p>
+    </div>
+    {% endif %}
+    {% else %}
     <div class="logreg_size">
-      <p><a href="{{ url_for('auth.login') }}">Login</a></p>
-        <p><a href="{{ url_for('auth.register') }}">Register</a></p>
+      <p>Please <a href="{{ url_for('auth.login') }}">Login</a> or <a href="{{ url_for('auth.register') }}">Register</a>.</p>
     </div>
-    <div class="about">
-      <p>about section</p>
-    </div>
-    <div class="features">
-      <p>features section</p>
-    </div>
-    <div id="dailyReminder" class="daily_style">
-      <p>Don't forget to check in today!</p>
-    </div>
-      {% endif %}
-    </div>
-  </body>
+    {% endif %}
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      var currentDay = new Date().getDay() - 1; 
+      if (currentDay < 0) currentDay = 6; 
+      var totalDays = $('.day').length;
+
+      function showDay(day) {
+        $('.day').removeClass('active').eq(day).addClass('active');
+      }
+
+      $('.next-btn').click(function() {
+        if (currentDay < totalDays - 1) {
+          currentDay++;
+          showDay(currentDay);
+        }
+      });
+
+      $('.prev-btn').click(function() {
+        if (currentDay > 0) {
+          currentDay--;
+          showDay(currentDay);
+        }
+      });
+
+      showDay(currentDay); 
+    });
+  </script>
+</body>
 </html>

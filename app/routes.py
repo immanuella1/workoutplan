@@ -68,6 +68,19 @@ def save_workout_plan(user_id, workout_dict):
     db.session.add(new_workout)
     db.session.commit()
 
+
+def parse_workout_text(workout_text):
+    lines = workout_text.split('-')
+    formatted_lines = []
+    for line in lines:
+        if line.strip():
+            parts = line.strip().split(':', 1)
+            if len(parts) == 2:
+                header, details = parts
+                formatted_lines.append(f"<strong>{header.strip()}:</strong> {details.strip()}")
+            else:
+                formatted_lines.append(parts[0].strip())
+    return '<br>'.join(formatted_lines)
 ####################################################################################
 
 # HOME PAGE
@@ -85,10 +98,23 @@ def index():
             today = datetime.utcnow().date()
             if today < next_update:
                 next_update = next_update.strftime("%Y-%m-%d")
-
-        return render_template("index.html", next_update=next_update)
+                
+        workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
+        if workout_plan:
+            workout_plan.monday = parse_workout_text(workout_plan.monday)
+            workout_plan.tuesday = parse_workout_text(workout_plan.tuesday)
+            workout_plan.wednesday = parse_workout_text(workout_plan.wednesday)
+            workout_plan.thursday = parse_workout_text(workout_plan.thursday)
+            workout_plan.friday = parse_workout_text(workout_plan.friday)
+            workout_plan.saturday = parse_workout_text(workout_plan.saturday)
+            workout_plan.sunday = parse_workout_text(workout_plan.sunday)
+            workout_plan.nutrition_goals = parse_workout_text(workout_plan.nutrition_goals)
+        
+        return render_template("index.html", next_update=next_update, workout_plan=workout_plan)
     else:
         return render_template("index.html")
+
+
 
 # REGISTRATION ROUTE
 @bp.route("/register", methods=["GET", "POST"])
@@ -237,19 +263,6 @@ def checkin_history():
     return render_template("checkin_history.html", checkins=checkins, total_points=user_info.points_earned if user_info else 0)
 
 
-def parse_workout_text(workout_text):
-    lines = workout_text.split('-')
-    formatted_lines = []
-    for line in lines:
-        if line.strip():
-            parts = line.strip().split(':', 1)
-            if len(parts) == 2:
-                header, details = parts
-                formatted_lines.append(f"<strong>{header.strip()}:</strong> {details.strip()}")
-            else:
-                formatted_lines.append(parts[0].strip())
-    return '<br>'.join(formatted_lines)
-
 
 # Display workouts
 @bp.route("/workout")
@@ -297,6 +310,7 @@ def weight_update():
 
     return render_template("weight_update.html", form=form, next_update=None)
 
+
 # Used to create graph
 @bp.route("/weight-history-data")
 @login_required
@@ -311,6 +325,7 @@ def weight_history_data():
         "weights": [entry.weight for entry in weight_entries],
     }
     return jsonify(data)
+
 
 # Route to check weight history
 @bp.route("/weight-history")
@@ -332,6 +347,7 @@ def weight_history():
             next_update = None
 
     return render_template("weight_history.html", next_update=next_update)
+
 
 # Route to update goals
 @bp.route("/update_info", methods=["GET", "POST"])
@@ -363,6 +379,7 @@ def update_info():
         return redirect(url_for("auth.index"))
 
     return render_template("update_info.html", form=form)
+
 
 @login_manager.user_loader
 def load_user(user_id):
