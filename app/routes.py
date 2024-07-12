@@ -95,10 +95,10 @@ def index():
         next_update = None
         if last_entry:
             next_update = last_entry.date + timedelta(weeks=2)
-            today = datetime.utcnow().date()
+            today = datetime.today().date()
             if today < next_update:
                 next_update = next_update.strftime("%Y-%m-%d")
-                
+
         workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
         if workout_plan:
             workout_plan.monday = parse_workout_text(workout_plan.monday)
@@ -113,7 +113,6 @@ def index():
         return render_template("index.html", next_update=next_update, workout_plan=workout_plan)
     else:
         return render_template("index.html")
-
 
 
 # REGISTRATION ROUTE
@@ -135,10 +134,10 @@ def register():
         if not UserInfo.query.filter_by(user_id=user.id).first():
             return redirect(url_for("auth.mandatory_update"))
 
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.index"))
     return render_template("register.html", form=form)
 
-# Mandatory route upon registration
+# MANDATORY UPDATE ROUTE
 @bp.route("/mandatory-update", methods=["GET", "POST"])
 @login_required
 def mandatory_update():
@@ -167,7 +166,6 @@ def mandatory_update():
         save_workout_plan(current_user.id, workout_dict)
 
         flash("Your information has been saved.")
-        flash(workout_dict, "workout_plan")
         return redirect(url_for("auth.index"))
 
     return render_template("mandatory_update.html", form=form)
@@ -193,14 +191,14 @@ def login():
 
     return render_template("login.html", form=form)
 
-# LOGOUT BUTTON FUNCTIONALITY
+# LOGOUT ROUTE
 @bp.route("/logout", methods=["POST"])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("auth.index"))
 
-# DAILY CHECK IN ROUTE
+# DAILY CHECK-IN ROUTE
 @bp.route("/daily-checkin", methods=["GET", "POST"])
 @login_required
 def daily_checkin():
@@ -221,11 +219,12 @@ def daily_checkin():
 
                 if not existing_checkin.did_workout and did_workout:
                     existing_checkin.did_workout = True
-                    existing_checkin.points_earned += 50
-                    current_user.add_points(50)
+                    user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+                    if user_info:
+                        user_info.add_points(50)
                     flash("You have marked your workout and earned 50 points.")
-
-                flash("Your food log has been updated.")
+                else:
+                    flash("Your food log has been updated.")
             else:
                 checkin = DailyCheckIn(
                     user_id=current_user.id,
@@ -233,12 +232,13 @@ def daily_checkin():
                     total_calories=nutrition_data.get("total_calories", 0),
                     total_protein=nutrition_data.get("total_protein", 0),
                     total_sugars=nutrition_data.get("total_sugars", 0),
-                    total_sodium=nutrition_data.get("total_sodium", 0),
-                    points_earned=50 if did_workout else 0
+                    total_sodium=nutrition_data.get("total_sodium", 0)
                 )
 
                 if did_workout:
-                    current_user.add_points(50)
+                    user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
+                    if user_info:
+                        user_info.add_points(50)
                     flash("Check-in successful! You earned 50 points.")
                 else:
                     flash("Check-in successful!")
@@ -253,18 +253,16 @@ def daily_checkin():
 
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
 
-
-# Route to check in with daily work out
+# CHECK-IN HISTORY ROUTE
 @bp.route("/checkin-history")
 @login_required
 def checkin_history():
     checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).order_by(DailyCheckIn.date.desc()).all()
     user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
-    return render_template("checkin_history.html", checkins=checkins, total_points=user_info.points_earned if user_info else 0)
+    total_points = user_info.points_earned if user_info else 0
+    return render_template("checkin_history.html", checkins=checkins, total_points=total_points)
 
-
-
-# Display workouts
+# WORKOUT DISPLAY ROUTE
 @bp.route("/workout")
 @login_required
 def workout():
@@ -280,8 +278,7 @@ def workout():
         workout_plan.nutrition_goals = parse_workout_text(workout_plan.nutrition_goals)
     return render_template("workout.html", workout_plan=workout_plan)
 
-
-# Update weight route
+# WEIGHT UPDATE ROUTE
 @bp.route("/weight-update", methods=["GET", "POST"])
 @login_required
 def weight_update():
@@ -310,8 +307,7 @@ def weight_update():
 
     return render_template("weight_update.html", form=form, next_update=None)
 
-
-# Used to create graph
+# WEIGHT HISTORY DATA ROUTE
 @bp.route("/weight-history-data")
 @login_required
 def weight_history_data():
@@ -326,8 +322,7 @@ def weight_history_data():
     }
     return jsonify(data)
 
-
-# Route to check weight history
+# WEIGHT HISTORY DISPLAY ROUTE
 @bp.route("/weight-history")
 @login_required
 def weight_history():
@@ -348,8 +343,7 @@ def weight_history():
 
     return render_template("weight_history.html", next_update=next_update)
 
-
-# Route to update goals
+# UPDATE USER INFO ROUTE
 @bp.route("/update_info", methods=["GET", "POST"])
 @login_required
 def update_info():
@@ -379,7 +373,6 @@ def update_info():
         return redirect(url_for("auth.index"))
 
     return render_template("update_info.html", form=form)
-
 
 @login_manager.user_loader
 def load_user(user_id):

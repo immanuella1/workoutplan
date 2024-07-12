@@ -7,47 +7,33 @@
 </head>
 <body class="main_page">  
   <div class="center_main">
-  <div class="heading_style">
-  <h1>Daily Check-In</h1>
-<!-- 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul>
-        {% for category, message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
+    <div class="heading_style">
+      <h1>Daily Check-In</h1>
+    </div>
+    {% if existing_checkin and existing_checkin.did_workout %}
+      <div class="text_size">
+        <p>You have already marked your workout today. Check back tomorrow!</p>
+      </div>
     {% endif %}
-  {% endwith %}
-   -->
-  {% if existing_checkin and existing_checkin.did_workout %}
-  <div class="text_size">
-    <p>You have already marked your workout today. Check back tomorrow!</p>
-  </div>
-  {% endif %}
     <form method="post" id="checkin-form">
       {% if not existing_checkin or not existing_checkin.did_workout %}
-      <div class="check_size">
-        <label for="did_workout">Did you workout today?</label>
-        <div class="custom-checkbox"></div>
-        <input type="checkbox" name="did_workout" id="did_workout"><br>
-      </div>
-    
+        <div class="check_size">
+          <label for="did_workout">Did you workout today?</label>
+          <div class="custom-checkbox"></div>
+          <input type="checkbox" name="did_workout" id="did_workout"><br>
+        </div>
       {% endif %}
-      
       <label for="food_log">Food log (enter what you ate):</label>
       <textarea name="food_log" id="food_log" required></textarea>
       <div class="submit">
-      <button type="submit">Submit</button>
-    </div>
+        <button type="submit">Submit</button>
       </div>
     </form>
   </div>
-  </div>
   <div class="check_size">
-  <div class="center_main">
-  <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
-</div>
-</div>
+    <div class="center_main">
+      <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
+    </div>
+  </div>
 </body>
 </html>

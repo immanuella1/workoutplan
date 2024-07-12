@@ -21,10 +21,10 @@ def workoutRecommendation(goal, height, current_weight):
         Friday: ...
         Saturday: ...
         Sunday: ...
-        Nutrition Goals: XXX calories a day - XXX grams of protein
+        Nutrition Goals: XXX calories a day - XXX grams of protein a day
 
         For example:
-        Nutrition Goals: 2000 calories a day - 150 grams of protein
+        Nutrition Goals: 2000 calories a day - 150 grams of protein a day
         
         DO NOT RETURN ANYTHING ELSE FOR NUTRITION GOALS OUTSIDE OF WHAT IS SPECIFIED
 

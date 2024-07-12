@@ -2,12 +2,6 @@ from datetime import datetime, date, timedelta
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
-from alembic import op
-import sqlalchemy as sa
-from sqlalchemy import text
 
 
 class User(UserMixin, db.Model):
@@ -38,10 +32,7 @@ class UserInfo(db.Model):
     time_frame = db.Column(db.Integer, nullable=False)
     user = db.relationship("User", backref=db.backref("info", uselist=False))
     points_earned = db.Column(db.Integer, default=0, nullable=False)
-    def __repr__(self):
-        return f"<UserInfo {self.user_id}>"
-    
-        # Put nullable as true insead of false
+
     def add_points(self, points):
         self.points_earned += points
 
@@ -67,6 +58,7 @@ class UserInfo(db.Model):
 
     def __repr__(self):
         return f"<UserInfo {self.user_id}>"
+
 
 class DailyCheckIn(db.Model):
     id = db.Column(db.Integer, primary_key=True)
