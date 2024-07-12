@@ -13,7 +13,9 @@
     <a href="{{ url_for('auth.checkin_history') }}">Check-In History</a>
     <a href="{{ url_for('auth.weight_history') }}">Weight History</a>
     <a href="{{ url_for('auth.update_info') }}">Update Your Information</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <form action="{{ url_for('auth.logout') }}" method="POST">
+      <button type="submit">Logout</button>
+    </form>
   </div>
 
   <div class="center_main">
