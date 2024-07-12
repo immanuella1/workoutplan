@@ -27,8 +27,9 @@
       {% if not next_update %}
       <p class="inline" ><a href="{{ url_for('auth.weight_update') }}">Update Weight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
     
-    </div>
-  </div>
+      </div>
+      </div>
+      </div>
       {% else %}
       
       <p>Next weight update is due on {{ next_update }}.</p>
@@ -39,8 +40,10 @@
       <form class="register" method="POST" action="{{ url_for('auth.logout') }}">
         <button type="submit">Logout</button>
       </form>
-    </div>
+      </div>
+    
     {% else %}
+
     <div class="heading_style">
       <h1>Welcome to <br> Hello Workout!</h1>
     </div>
