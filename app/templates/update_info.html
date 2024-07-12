@@ -7,23 +7,21 @@
   <div class="heading_style">
     <h1>Update Your Information</h1>
   </div>
-  <form method="post">
-    <div class="custom-input">
-      <div class="text_size">
-        <div class="center_main">
-          {{ form.hidden_tag() }}
-          
-          <label for="goal">New Goal:<br></label>
-          <input type="text" id="goal" name="goal" required><br>
-          
-          <label for="time_frame">Time Frame (in weeks):<br></label>
-          <input type="number" id="time_frame" name="time_frame" required><br>
-          
-          <button type="submit">Update</button>
-        
-        </div>
+  <div class="form_container">
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="fields_lables">
+        <label for="goal">New Goal:</label>
+        <input type="text" id="goal" name="goal" class="custom-input" required><br>
       </div>
-    </div>
-  </form>
+      <div class="fields_lables">
+        <label for="time_frame">Time Frame (in weeks):</label>
+        <input type="number" id="time_frame" name="time_frame" class="custom-input" required><br>
+      </div>
+      <div class="submit">
+        <button type="submit">Update</button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
