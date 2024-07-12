@@ -1,5 +1,6 @@
 body {
    font-size: 10px;
+   background-color: beige;
 }
 
 .main_page {
@@ -54,6 +55,7 @@ body {
 .fields_lables {
    font-size: 2.5em;
    margin-top: 2rem;
+   text-align: left;
 }
 
 .workout-container {
@@ -65,7 +67,7 @@ body {
    border-radius: 10px;
    background-color: beige;
    margin-top: 2rem;
-   font-size: 1.8rem;  /* Increased font size for workout text */
+   font-size: 1.8rem;
 }
 
 .day {
@@ -97,4 +99,89 @@ body {
    cursor: pointer;
    z-index: 100;
    border-radius: 5px;
+}
+
+.form_container {
+   margin-top: 2rem;
+   background-color: #fff;
+   padding: 1rem;
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.check_size {
+   margin-bottom: 1rem;
+   font-size: 1.5rem;
+   text-align: left;
+}
+
+.custom-input, textarea {
+   width: 100%;
+   padding: 0.5rem;
+   font-size: 1.2em;
+   border: 1px solid #ced4da;
+   border-radius: 5px;
+   margin-top: 0.5rem;
+}
+
+.submit {
+   margin-top: 2rem;
+   text-align: center;
+}
+
+.submit button {
+   font-size: 1.2em;
+   padding: 0.75rem 1.5rem;
+   background-color: #007bff;
+   color: white;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+}
+
+.submit button:hover {
+   background-color: #0056b3;
+}
+
+.center_main a {
+   color: #007bff;
+   text-decoration: none;
+}
+
+.center_main a:hover {
+   text-decoration: underline;
+}
+
+span[style*="color: red;"] {
+   color: #dc3545;
+   font-size: 0.9em;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ul li strong {
+    font-weight: bold;
+    color: #333;
+}
+
+ul li br {
+    margin-bottom: 0.5rem;
+}
+
+.text_size strong {
+    display: block;
+    margin-top: 1rem;
+    font-size: 1.8rem;
 }

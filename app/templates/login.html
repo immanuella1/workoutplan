@@ -1,39 +1,41 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  </head>
-  <body class="main_page" >
-    <div class="center_main">
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_style.css') }}">
+</head>
+<body class="main_page">
+  <div class="center_main">
     <div class="heading_style">
-    <h1>Login</h1>
+      <h1>Login</h1>
     </div>
-    <form method="post">
-      {{ form.hidden_tag() }}
-      <p class="fields_lables">
-        {{ form.username.label }}<br>
-        {{ form.username(class_='custom-input') }}<br>
-        {% for error in form.username.errors %}
-          <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-      </p>
-      <p class="fields_lables">
-        {{ form.password.label }}<br>
-        {{ form.password(class_='custom-input') }}<br>
-        {% for error in form.password.errors %}
-          <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-      </p>
-      <div class="remind">
-      <p>
-        {{ form.remember_me(class_='custom-checkbox') }} {{ form.remember_me.label }}
-      </p>
-      <p>{{ form.submit(class_='submit') }}</p>
-      
-    </form>
-    <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register Here!</a></p>
+    <div class="form_container">
+      <form method="post">
+        {{ form.hidden_tag() }}
+        <p class="fields_lables">
+          {{ form.username.label }}<br>
+          {{ form.username(class_='custom-input') }}<br>
+          {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </p>
+        <p class="fields_lables">
+          {{ form.password.label }}<br>
+          {{ form.password(class_='custom-input') }}<br>
+          {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </p>
+        <div class="remind">
+          {{ form.remember_me(class_='custom-checkbox') }} {{ form.remember_me.label }}
+        </div>
+        <div class="submit">
+          {{ form.submit(class_='submit') }}
+        </div>
+      </form>
+      <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register Here!</a></p>
+    </div>
   </div>
-  </body>
+</body>
 </html>

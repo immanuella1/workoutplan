@@ -12,20 +12,22 @@
       <p>You have already marked your workout today. Check back tomorrow!</p>
     </div>
   {% endif %}
-  <form method="post" id="checkin-form">
-    {% if not existing_checkin or not existing_checkin.did_workout %}
-      <div class="check_size">
-        <label for="did_workout">Did you workout today?</label>
-        <div class="custom-checkbox"></div>
-        <input type="checkbox" name="did_workout" id="did_workout"><br>
+  <div class="form_container">
+    <form method="post" action="{{ url_for('auth.checkin_history') }}">
+      {% if not existing_checkin or not existing_checkin.did_workout %}
+        <div class="check_size">
+          <label for="did_workout">Did you workout today?</label>
+          <input type="checkbox" name="did_workout" id="did_workout"><br>
+        </div>
+      {% endif %}
+      <div class="fields_lables">
+        <label for="food_log">Food log (enter what you ate):</label>
+        <textarea name="food_log" id="food_log" class="custom-input" required></textarea>
       </div>
-    {% endif %}
-    <label for="food_log">Food log (enter what you ate):</label>
-    <textarea name="food_log" id="food_log" required></textarea>
-    <div class="submit">
-      <button type="submit">Submit</button>
-    </div>
-  </form>
+      <div class="submit">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
 </div>
-
 {% endblock %}

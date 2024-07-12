@@ -85,34 +85,32 @@ def parse_workout_text(workout_text):
 
 # HOME PAGE
 @bp.route("/")
+@login_required
 def index():
-    if current_user.is_authenticated:
-        last_entry = (
-            WeightEntry.query.filter_by(user_id=current_user.id)
-            .order_by(WeightEntry.date.desc())
-            .first()
-        )
-        next_update = None
-        if last_entry:
-            next_update = last_entry.date + timedelta(weeks=2)
-            today = datetime.today().date()
-            if today < next_update:
-                next_update = next_update.strftime("%Y-%m-%d")
+    last_entry = (
+        WeightEntry.query.filter_by(user_id=current_user.id)
+        .order_by(WeightEntry.date.desc())
+        .first()
+    )
+    next_update = None
+    if last_entry:
+        next_update = last_entry.date + timedelta(weeks=2)
+        today = datetime.today().date()
+        if today < next_update:
+            next_update = next_update.strftime("%Y-%m-%d")
 
-        workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
-        if workout_plan:
-            workout_plan.monday = parse_workout_text(workout_plan.monday)
-            workout_plan.tuesday = parse_workout_text(workout_plan.tuesday)
-            workout_plan.wednesday = parse_workout_text(workout_plan.wednesday)
-            workout_plan.thursday = parse_workout_text(workout_plan.thursday)
-            workout_plan.friday = parse_workout_text(workout_plan.friday)
-            workout_plan.saturday = parse_workout_text(workout_plan.saturday)
-            workout_plan.sunday = parse_workout_text(workout_plan.sunday)
-            workout_plan.nutrition_goals = parse_workout_text(workout_plan.nutrition_goals)
-        
-        return render_template("index.html", next_update=next_update, workout_plan=workout_plan)
-    else:
-        return render_template("index.html")
+    workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
+    if workout_plan:
+        workout_plan.monday = parse_workout_text(workout_plan.monday)
+        workout_plan.tuesday = parse_workout_text(workout_plan.tuesday)
+        workout_plan.wednesday = parse_workout_text(workout_plan.wednesday)
+        workout_plan.thursday = parse_workout_text(workout_plan.thursday)
+        workout_plan.friday = parse_workout_text(workout_plan.friday)
+        workout_plan.saturday = parse_workout_text(workout_plan.saturday)
+        workout_plan.sunday = parse_workout_text(workout_plan.sunday)
+        workout_plan.nutrition_goals = parse_workout_text(workout_plan.nutrition_goals)
+    
+    return render_template("index.html", next_update=next_update, workout_plan=workout_plan)
 
 
 # REGISTRATION ROUTE
@@ -254,13 +252,17 @@ def daily_checkin():
     return render_template("daily_checkin.html", existing_checkin=existing_checkin)
 
 # CHECK-IN HISTORY ROUTE
-@bp.route("/checkin-history")
+@bp.route("/checkin-history", methods=["GET", "POST"])
 @login_required
 def checkin_history():
+    if request.method == "POST":
+        return redirect(url_for("auth.checkin_history"))
+
     checkins = DailyCheckIn.query.filter_by(user_id=current_user.id).order_by(DailyCheckIn.date.desc()).all()
     user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
     total_points = user_info.points_earned if user_info else 0
     return render_template("checkin_history.html", checkins=checkins, total_points=total_points)
+
 
 # WORKOUT DISPLAY ROUTE
 @bp.route("/workout")
