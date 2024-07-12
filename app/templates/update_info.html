@@ -1,42 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Update User Info</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="main_page"> 
-  <div class="center_main">
+{% extends "base.html" %}
+
+{% block title %}Update User Info{% endblock %}
+
+{% block content %}
+<div class="center_main">
   <div class="heading_style">
-  <h1>Update Your Information</h1>
+    <h1>Update Your Information</h1>
   </div>
   <form method="post">
-  <div class="custom-input">
-    <div class="text_size">
-      <div class="center_main">
-    {{ form.hidden_tag() }}
-    
-    <label for="goal">New Goal:<br></label>
-    <input type="text" id="goal" name="goal" required><br>
-    
-    <label for="time_frame">Time Frame (in weeks):<br></label>
-    <input type="number" id="time_frame" name="time_frame" required><br>
-    
-    <button type="submit">Update</button>
-  
-    </form>
-
-    <br><a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
-  </div>
-  </div>
-  </div>
-  <script>
-    document.getElementById('update-form').addEventListener('submit', function(event) {
-      
-      window.location.href = "{{ url_for('auth.index') }}";
-    });
-  </script>
+    <div class="custom-input">
+      <div class="text_size">
+        <div class="center_main">
+          {{ form.hidden_tag() }}
+          
+          <label for="goal">New Goal:<br></label>
+          <input type="text" id="goal" name="goal" required><br>
+          
+          <label for="time_frame">Time Frame (in weeks):<br></label>
+          <input type="number" id="time_frame" name="time_frame" required><br>
+          
+          <button type="submit">Update</button>
+        
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
-</div> 
-</body>
-</html>
+{% endblock %}
