@@ -27,15 +27,27 @@
   {% endif %}
     <form method="post" id="checkin-form">
       {% if not existing_checkin or not existing_checkin.did_workout %}
+      <div class="check_size">
         <label for="did_workout">Did you workout today?</label>
+        <div class="custom-checkbox"></div>
         <input type="checkbox" name="did_workout" id="did_workout"><br>
+      </div>
+    
       {% endif %}
+      
       <label for="food_log">Food log (enter what you ate):</label>
       <textarea name="food_log" id="food_log" required></textarea>
+      <div class="submit">
       <button type="submit">Submit</button>
+    </div>
+      </div>
     </form>
   </div>
   </div>
+  <div class="check_size">
+  <div class="center_main">
   <p><a href="{{ url_for('auth.index') }}">Back to Dashboard</a></p>
+</div>
+</div>
 </body>
 </html>
