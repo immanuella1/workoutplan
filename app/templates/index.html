@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <title>Hello, Workout!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body class="main_page">
   <!--<div class="center_main">-->
@@ -40,6 +38,7 @@
         <button type="submit">Logout</button>
       </form>
     </div>
+    
     {% else %}
     <div class="heading_style">
       <h1>Welcome to <br> Hello Workout!</h1>

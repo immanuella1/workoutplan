@@ -1,13 +1,17 @@
 import requests
 import json
+import dotenv
+import os
 
+app_id = os.getenv("X_APP_ID")
+app_key = os.getenv("X_APP_KEY")
 
 def nutrition_calculator(query):
     url = "https://trackapi.nutritionix.com/v2/natural/nutrients"
     headers = {
         "Content-Type": "application/json",
-        "x-app-id": "6f62040c",
-        "x-app-key": "d1489824d203fd2f2de64e20ca76bd18",
+        "x-app-id": app_id,
+        "x-app-key": app_key,
     }
     body = {"query": f"{query}"}
 
@@ -39,7 +43,7 @@ def nutrition_calculator(query):
 
                 total_calories += calories
                 total_protein += protein
-                total_sugars += sugars if sugars is not None else 0
+                total_sugars += sugars if sugars else 0
                 total_sodium += sodium
 
             total_calories = round(total_calories, 2)
