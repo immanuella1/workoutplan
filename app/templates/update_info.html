@@ -3,33 +3,40 @@
 <head>
   <meta charset="utf-8">
   <title>Update User Info</title>
-  
 </head>
-<body class="main_page">  
+<body class="main_page"> 
   <div class="center_main">
   <div class="heading_style">
   <h1>Update Your Information</h1>
   </div>
   <form method="post">
+  <div class="custom-input">
+    <label for="height">Height:</label>
+    <input type="number" id="height" name="height" step="0.01" required><br>
     
-      {{ form.hidden_tag() }}
+    <label for="current_weight">Current Weight:</label>
+    <input type="number" id="current_weight" name="current_weight" step="0.01" required><br>
     
     <label for="goal">Goal:</label>
-    {{ form.goal(size=32) }}<br>
+    <input type="text" id="goal" name="goal" required><br>
     
     <label for="time_frame">Time Frame (in weeks):</label>
-    {{ form.time_frame(size=32) }}<br>
+    <input type="number" id="time_frame" name="time_frame" required><br>
     
     <button type="submit">Update</button>
-  </div>
-  </form>
+  
+    </form>
 
-  <a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+    <br><a href="{{ url_for('auth.index') }}">Back to Dashboard</a>
+  </div>
+  </div>
+  </div>
   <script>
     document.getElementById('update-form').addEventListener('submit', function(event) {
       
       window.location.href = "{{ url_for('auth.index') }}";
     });
   </script>
+  </div>
 </body>
 </html>
