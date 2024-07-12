@@ -1,0 +1,82 @@
+body {
+    font-size: 10px;
+}
+
+.main_page {
+    background-color: beige;
+}
+
+.logreg_size {
+    font-size: 3em;
+    word-spacing: 4em;
+}
+
+.center_main {
+    text-align: center;
+    padding-top: 3%;
+}
+
+.heading_style {
+    font-style: normal;
+    font-family: 'Courier New', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 4em;
+    text-transform: uppercase;
+    margin-bottom: 1em;
+}
+
+.smaller_heading_style {
+    font-size: 2rem;
+}
+
+.text_size {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+.fields_lables {
+    font-size: 2.5em;
+    margin-top: 2rem;
+}
+
+.workout-container {
+    position: relative;
+    overflow: hidden;
+    height: 30em;
+    border: 1px solid #ccc;
+    padding: 1em;
+    border-radius: 10px;
+    background-color: beige;
+    margin-top: 2rem;
+    font-size: 1.8rem;  /* Increased font size for workout text */
+}
+
+.day {
+    display: none;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.day.active {
+    display: block;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.prev-btn, .next-btn {
+    padding: 0.5em 1em;
+    font-size: 1.6em;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    z-index: 100;
+    border-radius: 5px;
+}

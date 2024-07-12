@@ -236,12 +236,37 @@ def checkin_history():
     user_info = UserInfo.query.filter_by(user_id=current_user.id).first()
     return render_template("checkin_history.html", checkins=checkins, total_points=user_info.points_earned if user_info else 0)
 
+
+def parse_workout_text(workout_text):
+    lines = workout_text.split('-')
+    formatted_lines = []
+    for line in lines:
+        if line.strip():
+            parts = line.strip().split(':', 1)
+            if len(parts) == 2:
+                header, details = parts
+                formatted_lines.append(f"<strong>{header.strip()}:</strong> {details.strip()}")
+            else:
+                formatted_lines.append(parts[0].strip())
+    return '<br>'.join(formatted_lines)
+
+
 # Display workouts
 @bp.route("/workout")
 @login_required
 def workout():
     workout_plan = Workouts.query.filter_by(user_id=current_user.id).first()
+    if workout_plan:
+        workout_plan.monday = parse_workout_text(workout_plan.monday)
+        workout_plan.tuesday = parse_workout_text(workout_plan.tuesday)
+        workout_plan.wednesday = parse_workout_text(workout_plan.wednesday)
+        workout_plan.thursday = parse_workout_text(workout_plan.thursday)
+        workout_plan.friday = parse_workout_text(workout_plan.friday)
+        workout_plan.saturday = parse_workout_text(workout_plan.saturday)
+        workout_plan.sunday = parse_workout_text(workout_plan.sunday)
+        workout_plan.nutrition_goals = parse_workout_text(workout_plan.nutrition_goals)
     return render_template("workout.html", workout_plan=workout_plan)
+
 
 # Update weight route
 @bp.route("/weight-update", methods=["GET", "POST"])
